@@ -7,7 +7,7 @@ int lerArquivo()
 	  char url[100];
 	  char txt[]=".txt";
 
-	  char *info;	
+	  char info[100];	
 	  int par=1,impar=0, k=0,num;
 	  printf("Digite o nome do arquivo: ");
 	  scanf("%s",nomeArquivo);
@@ -21,7 +21,7 @@ int lerArquivo()
 	     printf("Erro, nao foi possivel abrir o arquivo\n");
 	else
   		while( (fgets(info, sizeof(info), arq))!=NULL ){
-   			printf("%s", info);
+//   			printf("%s", info);
    			sscanf(info, "%d", &num);
   	     	if(num%2==0){
 	     		par=par*num;
