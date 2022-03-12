@@ -1,7 +1,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <string.h>
-
+#include <stdio.h>
 typedef struct sLista{
 	int valor;
 	struct sLista *prox;

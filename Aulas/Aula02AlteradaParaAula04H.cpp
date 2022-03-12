@@ -26,13 +26,13 @@ int main(){
 		scanf("%s",palavra);		
 		fprintf(arq,palavra);
 		rewind(arq);
-		printf("%d %d\n", sizeof(info), sizeof(info2));
+		printf("%d %d\n", sizeof(info), sizeof(info));
 		while( (fgets(info, sizeof(info), ler))!=NULL ) {
    			if(!strcmp(info,palavra)){
-				printf("São iguais");
+				printf("Sao iguais");
 			}
 			else{
-				printf("São diferentes");
+				printf("Sao diferentes");
 			}	
 		}
 	}
