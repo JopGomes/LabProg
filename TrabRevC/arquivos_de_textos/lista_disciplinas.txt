@@ -1,0 +1,15 @@
+Duarte
+laboratorio de programacao
+2010
+2022.1
+90
+Veloso
+matematica discreta
+2009
+2022.2
+50
+zao
+Algebra linear II
+2001
+2020.2
+30

@@ -68,6 +68,29 @@ void buscar_disciplinas_aluno(LAlunos **pInicio,char codigo_aluno[], char period
         aux = aux->prox;
     }
 }
+<<<<<<< Updated upstream
+=======
+void buscar_disciplinas_LD(LDisciplinas **pInicio, char codigo_disciplina[], char periodo[])
+{
+    LDisciplinas *aux_disiplinas;
+    aux_disiplinas = *pInicio;
+    while (aux_disiplinas)
+    {
+        if (strcmp(aux_disiplinas->disciplina.periodo, periodo) == 0)
+        {
+            printf("\nMateria: %s", aux_disiplinas->disciplina.nome_materia);
+            printf("\nProfessor: %s", aux_disiplinas->disciplina.nome_professor);
+            printf("\nCodigo da disciplina:%s", aux_disiplinas->disciplina.codigo);
+            printf("\nCreditos da disciplina:%d \n", aux_disiplinas->disciplina.creditos);
+        }
+        aux_disiplinas = aux_disiplinas->prox;
+    }
+}
+
+void recuperar_lista_disc(){
+
+}
+>>>>>>> Stashed changes
 /*
 void inserir_materia(LDisciplinas **pInicio, char nome_disciplina[], char nome_professor[], char codigo_input[], char periodo_input[]){
     LDisciplinas *novo_elemento = (LDisciplinas*)malloc(sizeof(LDisciplinas));
@@ -80,6 +103,7 @@ void inserir_materia(LDisciplinas **pInicio, char nome_disciplina[], char nome_p
 }
 */
 
+<<<<<<< Updated upstream
 int main(){
     //declaracao de um caso inicial para testar insercao na lista de disciplinas de um aluno
     Odisciplina *calculo = (Odisciplina*)malloc(sizeof(Odisciplina)) ; // dar free()
@@ -89,6 +113,22 @@ int main(){
     strcpy(calculo->periodo,"2020.2");
     
     LDisciplinas *inicio_disc = (LDisciplinas*)malloc(sizeof(LDisciplinas));
+=======
+int main()
+{   char nome_lista_disciplinas[] = "arquivos_de_textos/lista_disciplinas.txt";
+    FILE *arquivo_disciplinas;
+    arquivo_disciplinas = fopen(nome_lista_disciplinas,"r");
+    if(arquivo_disciplinas == NULL) printf("não abriu");
+
+    // declaracao de um caso inicial para testar insercao na lista de disciplinas de um aluno
+    Odisciplina *calculo = (Odisciplina *)malloc(sizeof(Odisciplina)); // dar free()
+    strcpy(calculo->nome_materia, "calculoII");
+    strcpy(calculo->nome_professor, "rocha");
+    strcpy(calculo->codigo, "5552");
+    strcpy(calculo->periodo, "2020.2");
+
+    LDisciplinas *inicio_disc = (LDisciplinas *)malloc(sizeof(LDisciplinas)); // dar free()
+>>>>>>> Stashed changes
     inicio_disc->disciplina = *calculo;
     inicio_disc->prox = NULL;
 
@@ -104,7 +144,41 @@ int main(){
     novoElemento->prox = NULL;
     inicio = novoElemento;
 
+<<<<<<< Updated upstream
     while(1){
+=======
+    LDisciplinas *inicio_disc_todas = (LDisciplinas *)malloc(sizeof(LDisciplinas));
+    inicio_disc_todas->disciplina = *calculo;
+    inicio_disc_todas->prox = NULL;
+
+    //buscar lista de disciplinas ja existente
+    char nome_prof[100];
+    
+    while(fscanf(arquivo_disciplinas," %[^\n]",nome_prof) != -1){
+        char nome_disc[40];
+        char codigo[6];
+        char periodo[8];
+        int creditos;
+        fscanf(arquivo_disciplinas," %[^\n]",nome_disc);
+        fscanf(arquivo_disciplinas," %[^\n]",codigo);
+        fscanf(arquivo_disciplinas," %[^\n]",periodo);
+        fscanf(arquivo_disciplinas,"%d",&creditos);
+        printf("nome:%s\ncodigo da materia:%s\nperiodo:%s\n",nome_prof,codigo,periodo);
+        LDisciplinas *novoElemento =(LDisciplinas*)malloc(sizeof(LDisciplinas));
+        strcpy(novoElemento->disciplina.nome_professor,nome_prof);
+        strcpy(novoElemento->disciplina.nome_materia,nome_disc);
+        strcpy(novoElemento->disciplina.codigo,codigo);
+        strcpy(novoElemento->disciplina.periodo,periodo);
+        novoElemento->disciplina.creditos = creditos;
+        novoElemento->prox = inicio_disc_todas;
+        inicio_disc_todas = novoElemento;
+    }
+    fclose(arquivo_disciplinas);
+
+
+    while (1)
+    {
+>>>>>>> Stashed changes
         int operacao, lista;
         char periodo[7];
         printf("\nQual operacao deseja fazer?\n[1]Consulta [2]Insercao [3]Remocao [4]Sair\n");
