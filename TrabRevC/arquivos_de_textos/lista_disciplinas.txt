@@ -1,15 +1,20 @@
-Duarte
-laboratorio de programacao
-2010
-2022.1
-90
+Rocha
+calculo II
+2005
+2020.2
+70
+zao
+Algebra linear II
+2001
+2022.2
+50
 Veloso
 matematica discreta
 2009
 2022.2
 50
-zao
-Algebra linear II
-2001
-2020.2
-30
+Duarte
+laboratorio de programacao
+2010
+2022.1
+90

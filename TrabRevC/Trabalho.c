@@ -144,21 +144,23 @@ void buscar_disciplinas_aluno(LAlunos **pInicio, char codigo_aluno[], char perio
         aux = aux->prox;
     }
 }
-void buscar_disciplinas_LD(LDisciplinas **pInicio, char codigo_disciplina[], char periodo[])
+int buscar_disciplinas_LD(LDisciplinas **pInicio, char codigo_disciplina[], char periodo[])
 {
     LDisciplinas *aux_disiplinas;
     aux_disiplinas = *pInicio;
     while (aux_disiplinas)
     {
         if (strcmp(aux_disiplinas->disciplina.periodo, periodo) == 0)
-        {
+        {   if(strcmp(aux_disiplinas->disciplina.codigo, codigo_disciplina) != 0) break;
             printf("\nMateria: %s", aux_disiplinas->disciplina.nome_materia);
             printf("\nProfessor: %s", aux_disiplinas->disciplina.nome_professor);
             printf("\nCodigo da disciplina:%s", aux_disiplinas->disciplina.codigo);
             printf("\nCreditos da disciplina:%d \n", aux_disiplinas->disciplina.creditos);
+            return 1;
         }
         aux_disiplinas = aux_disiplinas->prox;
     }
+    return 0;
 }
 
 void recuperar_lista_disc(){
@@ -182,22 +184,11 @@ int main()
     arquivo_disciplinas = fopen(nome_lista_disciplinas,"r");
     if(arquivo_disciplinas == NULL) printf("não abriu");
 
-    // declaracao de um caso inicial para testar insercao na lista de disciplinas de um aluno
-    Odisciplina *calculo = (Odisciplina *)malloc(sizeof(Odisciplina)); // dar free()
-    strcpy(calculo->nome_materia, "calculoII");
-    strcpy(calculo->nome_professor, "rocha");
-    strcpy(calculo->codigo, "5552");
-    strcpy(calculo->periodo, "2020.2");
-
-    LDisciplinas *inicio_disc = (LDisciplinas *)malloc(sizeof(LDisciplinas)); // dar free()
-    inicio_disc->disciplina = *calculo;
-    inicio_disc->prox = NULL;
-
     Oaluno *rafael = (Oaluno *)malloc(sizeof(Oaluno)); // dar free()
     strcpy(rafael->nome, "rafael");
     strcpy(rafael->codigo, "20057");
     strcpy(rafael->cpf, "09020008455");
-    rafael->inicio = inicio_disc;
+    rafael->inicio = NULL;
 
     LAlunos *inicio = NULL;
     LAlunos *novoElemento = (LAlunos *)malloc(sizeof(LAlunos)); // dar free()
@@ -206,9 +197,7 @@ int main()
     inicio = novoElemento;
 
     LDisciplinas *inicio_disc_todas = (LDisciplinas *)malloc(sizeof(LDisciplinas));
-    inicio_disc_todas->disciplina = *calculo;
-    inicio_disc_todas->prox = NULL;
-
+    inicio_disc_todas = NULL;
     //buscar lista de disciplinas ja existente
     char nome_prof[100];
     
@@ -221,12 +210,15 @@ int main()
         fscanf(arquivo_disciplinas," %[^\n]",codigo);
         fscanf(arquivo_disciplinas," %[^\n]",periodo);
         fscanf(arquivo_disciplinas,"%d",&creditos);
+
         printf("nome:%s\ncodigo da materia:%s\nperiodo:%s\n",nome_prof,codigo,periodo);
+        
         LDisciplinas *novoElemento =(LDisciplinas*)malloc(sizeof(LDisciplinas));
         strcpy(novoElemento->disciplina.nome_professor,nome_prof);
         strcpy(novoElemento->disciplina.nome_materia,nome_disc);
         strcpy(novoElemento->disciplina.codigo,codigo);
         strcpy(novoElemento->disciplina.periodo,periodo);
+        
         novoElemento->disciplina.creditos = creditos;
         novoElemento->prox = inicio_disc_todas;
         inicio_disc_todas = novoElemento;
@@ -338,7 +330,8 @@ int main()
                 scanf(" %[^\n]", codigo);
                 printf("\nQual o periodo da disciplina? ");
                 scanf(" %[^\n]", periodo);
-                buscar_disciplinas_LD(&inicio_disc_todas, codigo, periodo);
+                if( buscar_disciplinas_LD(&inicio_disc_todas, codigo, periodo) == 0)
+                    printf("\nNao existe essa materia nesse periodo\n");
                 //-------- falta busca de alunos em uma disciplina
             }
             else if (operacao == 2)
@@ -396,6 +389,33 @@ int main()
     // Frees de teste
 
     // Frees necessarios
+    // liberar memoria da liata de disciplinas e passar salvamento em documento
+
+    arquivo_disciplinas = fopen(nome_lista_disciplinas,"w");
+    
+    LDisciplinas *aux;
+    aux = inicio_disc_todas;
+
+    while(aux){
+        char texto[100];
+        LDisciplinas *tmp = aux->prox;
+        strcpy(texto,aux->disciplina.nome_professor);
+        strcat(texto,"\n");
+        fprintf(arquivo_disciplinas, texto);
+        strcpy(texto,aux->disciplina.nome_materia);
+        strcat(texto,"\n");
+        fprintf(arquivo_disciplinas, texto);
+        strcpy(texto,aux->disciplina.codigo);
+        strcat(texto,"\n");
+        fprintf(arquivo_disciplinas, texto);
+        strcpy(texto,aux->disciplina.periodo);
+        strcat(texto,"\n");
+        fprintf(arquivo_disciplinas, texto);
+        fprintf(arquivo_disciplinas,"%d\n",aux->disciplina.creditos);
+        free(aux);
+        aux = tmp;
+    }
+
     //  liberar memoria da lista de alunos
     LAlunos *auxAluno;
     auxAluno = inicio;
@@ -414,6 +434,7 @@ int main()
         }
         free(auxAluno);
         auxAluno = tmp;
-    }
+    }    
+
     return 0;
 }
