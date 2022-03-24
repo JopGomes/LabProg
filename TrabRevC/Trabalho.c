@@ -83,16 +83,13 @@ void remove_Disci_Do_Alu(LAlunos **pInicio, LDisciplinas **pInicioDisc, char cod
             }
 
             if (countDisc == 0 && tipo == 1)
-            {
                 printf("\n O aluno nao cursou essa disciplina , verifique o periodo\n");
-            }
         }
         aux = aux->prox;
     }
     if (aux && countAlu == 0 && tipo == 1)
-    {
         printf("\nNao existe aluno com esse codigo\n");
-    }
+    
 }
 void remove_LA(LAlunos **pInicio, char codigo[])
 { // Função para remover o aluno
@@ -547,11 +544,9 @@ int main()
             }
         }
     }
-    // Frees de teste
 
-    // Frees necessarios
-    // liberar memoria da liata de disciplinas e passar salvamento em documento
-
+    // liberar memoria da lista de disciplinas e passar salvamento em documento
+    // Salvamento e free lista de disciplinas
     arquivo_disciplinas = fopen(nome_lista_disciplinas, "w");
 
     LDisciplinas *aux;
@@ -589,17 +584,22 @@ int main()
         LAlunos *tmp = auxAluno->prox;
 
         // liberar memoria da lista de disciplina do aluno
+        //Salvar os dados: nome,codigo,cpf ( tudo ) do aluno no arquivo texto
+        //Definir um simbolo para fim de dados do aluno ou ->só contar 3 informações<-
         LDisciplinas *auxDisciplina;
         auxDisciplina = auxAluno->aluno.inicio;
         while (auxDisciplina)
         {
             LDisciplinas *tmp = auxDisciplina->prox;
+            //Salvar os dados: codigo e periodo da disciplina na LDisciplinas do aluno no arquivo texto
             free(auxDisciplina);
             auxDisciplina = tmp;
         }
+        //fprintf(simbolo que defini fim da lista de disciplina)
         free(auxAluno);
         auxAluno = tmp;
     }
+    //EOF
 
     return 0;
 }
