@@ -93,6 +93,7 @@ void remove_Disci_Do_Alu(LAlunos **pInicio, LDisciplinas **pInicioDisc, char cod
     {
         printf("\nNao existe aluno com esse codigo\n");
     }*/
+
 }
 void remove_LA(LAlunos **pInicio, char codigo[])
 { // Função para remover o aluno
@@ -578,6 +579,8 @@ int main()
         fprintf(arquivo_alunos,"%s\n",auxAluno->aluno.codigo);
         fprintf(arquivo_alunos,"%s\n",auxAluno->aluno.cpf);
         // liberar memoria da lista de disciplina do aluno
+        //Salvar os dados: nome,codigo,cpf ( tudo ) do aluno no arquivo texto
+        //Definir um simbolo para fim de dados do aluno ou ->só contar 3 informações<-
         LDisciplinas *auxDisciplina;
         auxDisciplina = auxAluno->aluno.inicio;
         while (auxDisciplina)
