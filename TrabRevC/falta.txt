@@ -1,0 +1,5 @@
+-ADC FUNC busca aluno em uma disc
+- Validações para os codigos de disc e aluno
+- Verificar se tem alunos com esse codigo e barrar a criação 
+- Nao pode ter disciplina com msm codigo e periodo  
+- Validação periodo
