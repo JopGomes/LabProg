@@ -2,11 +2,6 @@
 #include <string.h>
 #include <stdlib.h>
  
-char todas_disciplinas[]="xxxx";
-char todos_alunos[]="xxxxx";
-char nao_printar[]="nao printar";
-char printar[] = "printar";
-
 typedef struct Disciplina
 {
     char nome_professor[100];
@@ -66,7 +61,7 @@ int buscar_disciplinas_periodo(LDisciplinas **pInicio, char codigo_disciplina[],
             if(strcmp(aux_disciplinas->disciplina.codigo, codigo_disciplina) == 0){
                 acabar = 1;
             }
-            if((strcmp(printa_dados,printar) == 0) && (acabar || strcmp(todas_disciplinas,codigo_disciplina) == 0)){
+            if((strcmp(printa_dados,"printar") == 0) && (acabar || strcmp("XXXX",codigo_disciplina) == 0)){
                 printf("\nMateria: %s", aux_disciplinas->disciplina.nome_materia);
                 printf("\nCodigo da disciplina:%s", aux_disciplinas->disciplina.codigo);
  
@@ -94,7 +89,7 @@ void buscar_disciplinas_aluno(LAlunos **pInicio, char codigo_aluno[], char perio
         {  
             LDisciplinas *aux_disciplinas;
             aux_disciplinas = aux->aluno.inicio;
-            buscar_disciplinas_periodo(&aux_disciplinas, todas_disciplinas, periodo_input,printar);
+            buscar_disciplinas_periodo(&aux_disciplinas, "XXXX", periodo_input,"printar");
             break;
         }
         aux = aux->prox;
@@ -210,12 +205,10 @@ void remove_Disci_Do_Alu(LAlunos **pInicio, char codigo_aluno[], char codigo_dis
     aux = *pInicio;
     while(aux)
     {
-        if (strcmp(aux->aluno.codigo, codigo_aluno) == 0 || strcmp(todos_alunos, codigo_aluno) == 0 )
-        {
-            LDisciplinas *aux_disciplinas;
-            aux_disciplinas = aux->aluno.inicio;
-            foi_removido = remove_disciplina(&aux_disciplinas,codigo_disciplina,periodo_input);
-            if(strcmp(aux->aluno.codigo, codigo_aluno) == 0) break;
+        if (strcmp(aux->aluno.codigo, codigo_aluno) == 0 || strcmp("XXXXX", codigo_aluno) == 0 )
+        {   
+            foi_removido = remove_disciplina(&aux->aluno.inicio,codigo_disciplina,periodo_input);
+            if((strcmp(aux->aluno.codigo, codigo_aluno) == 0) && (strcmp("XXXXX", codigo_aluno) == 1)) break;
         }
         aux = aux->prox;
     }
@@ -262,22 +255,7 @@ void remove_LA(LAlunos **pInicio, char codigo[])
         printf("\nNao ha aluno com esse codigo\n");
     }
 }
-void remove_disci_da_lista(LAlunos **pInicio, LDisciplinas **pInicioDisc, char codigo_disciplina[], char periodo_input[])
-{ // Função para remover a disciplina da lista de disciplinas
-    int tinha_disciplina = 0;
-    LDisciplinas *aux;
-    aux = *pInicioDisc;
-    tinha_disciplina = remove_disciplina(&aux,codigo_disciplina,periodo_input);
-    if(tinha_disciplina) printf("Disciplina de codigo %s foi removida com sucesso do periodo %s!\n",codigo_disciplina,periodo_input);
-    else printf("\nNao ha disciplina com esse codigo nesse periodo\n");
- 
-    // Função para remover a disciplina de todos os alunos
-    LAlunos *auxAlu;
-    auxAlu = *pInicio;
- 
-    remove_Disci_Do_Alu(&auxAlu,todos_alunos, codigo_disciplina, periodo_input, 0); // Melhorar para ordem de n, mudando o pInicio de cada aluno ( em tese ja passou por aqueles antes)
-}
- 
+
 int main()
 {
     char nome_lista_disciplinas[] = "arquivos_de_textos/lista_disciplinas.txt";
@@ -458,16 +436,16 @@ int main()
                 printf("\nQual o periodo da disciplina? ");
                 scanf(" %[^\n]", periodo);
                 printf("\nLista de disciplinas:");
-                buscar_disciplinas_periodo(&inicio_disc_todas, todas_disciplinas, periodo,printar);
+                buscar_disciplinas_periodo(&inicio_disc_todas, "XXXX", periodo,"printar");
                 printf("\nQual o codigo da disciplina? ");
                 scanf(" %[^\n]", codigo);
-                if (buscar_disciplinas_periodo(&inicio_disc_todas, codigo, periodo,nao_printar) == 0)
+                if (buscar_disciplinas_periodo(&inicio_disc_todas, codigo, periodo,"nao printar") == 0)
                     printf("\nNao existe essa materia nesse periodo\n");
                 else{
                     printf("\nQual verificao deseja fazer?\n[1]Dados da disciplina %s [2]Alunos matriculados nela no periodo %s\n",codigo, periodo);
                     scanf("%d",&opcao2);
  
-                    if(opcao2 == 1) buscar_disciplinas_periodo(&inicio_disc_todas,codigo,periodo,printar);//funcao bugada
+                    if(opcao2 == 1) buscar_disciplinas_periodo(&inicio_disc_todas,codigo,periodo,"printar");//funcao bugada
                     else{
                         printf("Lista de alunos:");
                         buscar_alunos_disciplina(&inicio,codigo,periodo);
@@ -526,7 +504,8 @@ int main()
                 scanf(" %[^\n]", codigo_disciplina);
                 printf("\nQual o periodo que a disciplina %s foi cursada? ", codigo_disciplina);
                 scanf(" %[^\n]", periodo);
-                remove_disci_da_lista(&inicio,&inicio_disc_todas,codigo_disciplina,periodo);
+                remove_disciplina(&inicio_disc_todas, codigo_disciplina, periodo);
+                remove_Disci_Do_Alu(&inicio,"XXXXX", codigo_disciplina, periodo, 0);
             }
         }
     }
