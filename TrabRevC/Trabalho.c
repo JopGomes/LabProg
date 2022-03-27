@@ -38,7 +38,7 @@ int buscar_aluno_LA(LAlunos **inicio, char codigo_input[], char printar[])
     aux = *inicio;
     while (aux)
     {
-        if (strcmp(aux->aluno.codigo, codigo_input) == 0)
+        if ((strcmp(aux->aluno.codigo, codigo_input) == 0) && (strcmp(printar, "printar")==0))
         {
             printf("\nNome:%s \ncodigo: %s \ncpf: %s \n ", aux->aluno.nome, aux->aluno.codigo, aux->aluno.cpf);
             achou++;
@@ -137,7 +137,7 @@ void buscar_alunos_disciplina(LAlunos **pInicio, char codigo_disc[], char period
 }
 void inserir_aluno(LAlunos **pInicio, char nome_input[], char codigo_input[], char cpf_input[],char printar[])
 {
-    if (buscar_aluno_LA(pInicio, nome_input, "nao printar") == 1)
+    if (buscar_aluno_LA(pInicio, nome_input, "nao printar") == 0)
     {
         LAlunos *novo_elemento = (LAlunos *)malloc(sizeof(LAlunos)); // dar free()
         strcpy(novo_elemento->aluno.nome, nome_input);
@@ -376,7 +376,7 @@ int main()
         printf("\nQual operacao deseja fazer?\n[1]Consulta [2]Insercao [3]Remocao [4]Sair\n");
         scanf("%d", &operacao);
         if (operacao == 4)
-        { // --------- Adicionar o salvamento
+        { 
             break;
         }
         printf("\nEm qual lista deseja fazer a operacao?\n[1]Alunos [2]Disciplinas\n");
@@ -569,11 +569,10 @@ int main()
             }
         }
     }
-    // Frees de teste
 
     // Frees necessarios
 
-    // liberar memoria da liata de disciplinas e passar salvamento em documento
+    // liberar memoria da lista de disciplinas e passar salvamento em documento
     arquivo_disciplinas = fopen(nome_lista_disciplinas, "w");
 
     LDisciplinas *aux;
@@ -605,9 +604,8 @@ int main()
         fprintf(arquivo_alunos, "%s\n", auxAluno->aluno.nome);
         fprintf(arquivo_alunos, "%s\n", auxAluno->aluno.codigo);
         fprintf(arquivo_alunos, "%s\n", auxAluno->aluno.cpf);
-        // liberar memoria da lista de disciplina do aluno
-        // Salvar os dados: nome,codigo,cpf ( tudo ) do aluno no arquivo texto
-        // Definir um simbolo para fim de dados do aluno ou ->só contar 3 informações<-
+
+        // liberar memoria da lista de disciplinas de um aluno
         LDisciplinas *auxDisciplina;
         auxDisciplina = auxAluno->aluno.inicio;
         while (auxDisciplina)
@@ -618,10 +616,12 @@ int main()
             free(auxDisciplina);
             auxDisciplina = tmp;
         }
+        //defindo o final da lista de disciplinas de um aluno
         fprintf(arquivo_alunos, "----\n");
         free(auxAluno);
         auxAluno = tmp;
     }
     fclose(arquivo_alunos);
+
     return 0;
 }
