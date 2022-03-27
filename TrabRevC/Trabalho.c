@@ -38,7 +38,7 @@ int buscar_aluno_LA(LAlunos **inicio, char codigo_input[], char printar[])
     aux = *inicio;
     while (aux)
     {
-        if ((strcmp(aux->aluno.codigo, codigo_input) == 0) && (strcmp(printar, "printar")==0))
+        if ((strcmp(aux->aluno.codigo, codigo_input) == 0) && (strcmp(printar, "printar") == 0))
         {
             printf("\nNome:%s \ncodigo: %s \ncpf: %s \n ", aux->aluno.nome, aux->aluno.codigo, aux->aluno.cpf);
             achou++;
@@ -47,9 +47,9 @@ int buscar_aluno_LA(LAlunos **inicio, char codigo_input[], char printar[])
         }
         aux = aux->prox;
     }
-    if (achou == 0 && (strcmp(printar, "printar")==0))
+    if (achou == 0 && (strcmp(printar, "printar") == 0))
         printf("\n Nao ha aluno com esse codigo\n");
-        return 0;
+    return 0;
 }
 int buscar_disciplinas_periodo(LDisciplinas **pInicio, char codigo_disciplina[], char periodo[], char printa_dados[]) // consertar n acha todas disciplinas
 {
@@ -118,7 +118,7 @@ void buscar_disciplinas_aluno(LAlunos **pInicio, char codigo_aluno[], char perio
         printf("\nAluno %s nao esta cadastrado com essa disciplina, cadastre-o antes\n", codigo_aluno);
     }
 }
-void buscar_alunos_disciplina(LAlunos **pInicio, char codigo_disc[], char periodo[])
+int buscar_alunos_disciplina(LAlunos **pInicio, char codigo_disc[], char periodo[],char printar[])
 {
     LAlunos *auxAlu;
     auxAlu = *pInicio;
@@ -129,13 +129,18 @@ void buscar_alunos_disciplina(LAlunos **pInicio, char codigo_disc[], char period
         LDisciplinas *auxDA;
         auxDA = auxAlu->aluno.inicio;                                                    // embaixo
         cursou = buscar_disciplinas_periodo(&auxDA, codigo_disc, periodo, "nao printa"); // Melhorar para ordem de n, mudando o pInicio de cada aluno ( em tese ja passou por aqueles antes)
-        if (cursou)
+        if (cursou && strcmp(printar,"printar")==0)
             printf("\n%s", auxAlu->aluno.nome);
+            return 1;
+        if(strcmp(printar,"printar")==0){
+            printf("\n");
+        }
         auxAlu = auxAlu->prox;
     }
-    printf("\n");
+ 
+    return 0;
 }
-void inserir_aluno(LAlunos **pInicio, char nome_input[], char codigo_input[], char cpf_input[],char printar[])
+void inserir_aluno(LAlunos **pInicio, char nome_input[], char codigo_input[], char cpf_input[], char printar[])
 {
     if (buscar_aluno_LA(pInicio, nome_input, "nao printar") == 0)
     {
@@ -147,7 +152,7 @@ void inserir_aluno(LAlunos **pInicio, char nome_input[], char codigo_input[], ch
         novo_elemento->prox = *pInicio;
         *pInicio = novo_elemento;
     }
-    else if((strcmp(printar, "printar") == 0))
+    else if ((strcmp(printar, "printar") == 0))
     {
         printf("Esse aluno ja existe no banco de dados");
     }
@@ -167,22 +172,25 @@ void inserir_disc_aluno(LDisciplinas **pInicioD, LAlunos **pInicio, char codigo[
             {
                 if (strcmp(aux->aluno.codigo, codigo) == 0)
                 {
-                    LDisciplinas *novo_elemento = (LDisciplinas *)malloc(sizeof(LDisciplinas));
-                    strcpy(novo_elemento->disciplina.codigo, codigo_disciplina);
-                    strcpy(novo_elemento->disciplina.periodo, periodo);
-                    strcpy(novo_elemento->disciplina.nome_professor, aux_disciplinas->disciplina.nome_professor);
-                    strcpy(novo_elemento->disciplina.nome_materia, aux_disciplinas->disciplina.nome_materia);
-                    novo_elemento->disciplina.creditos = aux_disciplinas->disciplina.creditos;
-                    // novo_elemento->prox = *pInicio;
-                    // *pInicio = novo_elemento;
-                    // Analogo a parada de cima
+                    if (buscar_alunos_disciplina(&aux,codigo_disciplina,periodo,"nao printar")==1)
+                    {
+                        LDisciplinas *novo_elemento = (LDisciplinas *)malloc(sizeof(LDisciplinas));
+                        strcpy(novo_elemento->disciplina.codigo, codigo_disciplina);
+                        strcpy(novo_elemento->disciplina.periodo, periodo);
+                        strcpy(novo_elemento->disciplina.nome_professor, aux_disciplinas->disciplina.nome_professor);
+                        strcpy(novo_elemento->disciplina.nome_materia, aux_disciplinas->disciplina.nome_materia);
+                        novo_elemento->disciplina.creditos = aux_disciplinas->disciplina.creditos;
+                        // novo_elemento->prox = *pInicio;
+                        // *pInicio = novo_elemento;
+                        // Analogo a parada de cima
 
-                    LDisciplinas *auxD = aux->aluno.inicio;
-                    novo_elemento->prox = auxD;
-                    aux->aluno.inicio = novo_elemento;
-                    achou = 1;
-                    // inserir_materia()
-                    break;
+                        LDisciplinas *auxD = aux->aluno.inicio;
+                        novo_elemento->prox = auxD;
+                        aux->aluno.inicio = novo_elemento;
+                        achou = 1;
+                        // inserir_materia()
+                        break;
+                    }
                 }
                 aux = aux->prox;
             }
@@ -201,7 +209,7 @@ void inserir_disc_aluno(LDisciplinas **pInicioD, LAlunos **pInicio, char codigo[
 }
 void inserir_disc(LDisciplinas **pInicio, char nome_professor[], char nome_materia[], char codigo_disciplina[], char periodo[], int creditos)
 {
-    if (buscar_disciplinas_periodo(pInicio,codigo_disciplina,periodo,"nao printa") != 1)
+    if (buscar_disciplinas_periodo(pInicio, codigo_disciplina, periodo, "nao printa") != 1)
     {
         LDisciplinas *novo_elemento = (LDisciplinas *)malloc(sizeof(LDisciplinas)); // dar o free nessa
         strcpy(novo_elemento->disciplina.nome_professor, nome_professor);
@@ -212,7 +220,8 @@ void inserir_disc(LDisciplinas **pInicio, char nome_professor[], char nome_mater
         novo_elemento->prox = *pInicio;
         *pInicio = novo_elemento;
     }
-    else{
+    else
+    {
         printf("Essa disciplina ja existe nesse periodo,remova para alterar\n");
     }
 }
@@ -356,7 +365,7 @@ int main()
         fscanf(arquivo_alunos, " %[^\n]", codigo);
         fscanf(arquivo_alunos, " %[^\n]", cpf);
 
-        inserir_aluno(&inicio, nome_aluno, codigo, cpf,"nao printar");
+        inserir_aluno(&inicio, nome_aluno, codigo, cpf, "nao printar");
 
         while (1)
         {
@@ -364,7 +373,7 @@ int main()
             if (strcmp(codigo_disciplina, "----") == 0)
                 break;
             fscanf(arquivo_alunos, " %[^\n]", periodo_disciplina);
-            inserir_disc_aluno(&inicio_disc_todas, &inicio, codigo, codigo_disciplina, periodo_disciplina,"nao printar");
+            inserir_disc_aluno(&inicio_disc_todas, &inicio, codigo, codigo_disciplina, periodo_disciplina, "nao printar");
         }
     }
     fclose(arquivo_alunos);
@@ -376,11 +385,18 @@ int main()
         printf("\nQual operacao deseja fazer?\n[1]Consulta [2]Insercao [3]Remocao [4]Sair\n");
         scanf("%d", &operacao);
         if (operacao == 4)
-        { 
+        {
             break;
         }
-        printf("\nEm qual lista deseja fazer a operacao?\n[1]Alunos [2]Disciplinas\n");
-        scanf("%d", &lista);
+        if (operacao == 1 || operacao == 2 || operacao == 3)
+        {
+            printf("\nEm qual lista deseja fazer a operacao?\n[1]Alunos [2]Disciplinas\n");
+            scanf("%d", &lista);
+        }
+        else
+        {
+            printf("\nDigite uma opcao valida \n");
+        }
 
         if (lista == 1)
         { // mexendo na lista de alunos
@@ -394,7 +410,7 @@ int main()
                 scanf("%d", &opcao2);
                 if (opcao2 == 1)
                 {
-                    buscar_aluno_LA(&inicio, codigo,"printar"); // busca de aluno no sistema
+                    buscar_aluno_LA(&inicio, codigo, "printar"); // busca de aluno no sistema
                 }
                 else if (opcao2 == 2)
                 {
@@ -429,11 +445,11 @@ int main()
                         int opcao3;
                         printf("\nQual o nome? ");
                         scanf(" %[^\n]", nome);
-                        printf("\nQual o codigo? ");
+                        printf("\nQual o codigo de 5 digitos? ");
                         scanf(" %[^\n]", codigo);
                         printf("\nQual o cpf(numero inteiro)? ");
                         scanf(" %[^\n]", num_cpf);
-                        inserir_aluno(&inicio, nome, codigo, num_cpf,"printar");
+                        inserir_aluno(&inicio, nome, codigo, num_cpf, "printar");
                         printf("\nDeseja inserir novo aluno?\n[1]Sim [2]Nao\n ");
                         scanf("%d", &opcao3);
                         if (opcao3 == 2)
@@ -450,7 +466,7 @@ int main()
                     scanf(" %[^\n]", codigo);
                     printf("\nQual o periodo que o aluno %s cursou a disciplina? ", codigo);
                     scanf(" %[^\n]", periodo);
-                    inserir_disc_aluno(&inicio_disc_todas, &inicio, codigo, codigo_disciplina, periodo,"nao printar");
+                    inserir_disc_aluno(&inicio_disc_todas, &inicio, codigo, codigo_disciplina, periodo, "nao printar");
                 }
                 else
                 {
@@ -462,19 +478,30 @@ int main()
                 int opcao_aluno_remocao;
                 printf("\nQual o codigo do aluno? ");
                 scanf(" %[^\n]", codigo);
-                printf("\nEm qual lista?\n[1]Alunos [2]Disciplina\n");
-                scanf("%d", &opcao_aluno_remocao);
-                if (opcao_aluno_remocao == 1)
-                    remove_LA(&inicio, codigo);
-                if (opcao_aluno_remocao == 2)
+                while (1)
                 {
-                    char codigo_disciplina[5];
-                    char periodo[7];
-                    printf("Qual o codigo da disciplina? ");
-                    scanf(" %[^\n]", codigo_disciplina);
-                    printf("Em qual periodo foi cursada? ");
-                    scanf(" %[^\n]", periodo);
-                    remove_Disci_Do_Alu(&inicio, codigo, codigo_disciplina, periodo, 1);
+                    printf("\nEm qual lista?\n[1]Alunos [2]Disciplina\n");
+                    scanf("%d", &opcao_aluno_remocao);
+                    if (opcao_aluno_remocao == 1)
+                    {
+                        remove_LA(&inicio, codigo);
+                        break;
+                    }
+                    else if (opcao_aluno_remocao == 2)
+                    {
+                        char codigo_disciplina[5];
+                        char periodo[7];
+                        printf("Qual o codigo da disciplina? ");
+                        scanf(" %[^\n]", codigo_disciplina);
+                        printf("Em qual periodo foi cursada? ");
+                        scanf(" %[^\n]", periodo);
+                        remove_Disci_Do_Alu(&inicio, codigo, codigo_disciplina, periodo, 1);
+                        break;
+                    }
+                    else
+                    {
+                        printf("\nDigite uma opcao valida\n");
+                    }
                 }
             }
             else
@@ -496,22 +523,32 @@ int main()
                 buscar_disciplinas_periodo(&inicio_disc_todas, "XXXX", periodo, "printar");
                 printf("\nQual o codigo da disciplina? ");
                 scanf(" %[^\n]", codigo);
-                if (buscar_disciplinas_periodo(&inicio_disc_todas, codigo, periodo, "nao printar") == 0)
-                    printf("\nNao existe disciplina com esse codigo nesse periodo, insira ela na lista de disciplinas\n");
-                else
+                while (1)
                 {
-                    printf("\nQual verificao deseja fazer?\n[1]Dados da disciplina %s [2]Alunos matriculados nela no periodo %s\n", codigo, periodo);
-                    scanf("%d", &opcao2);
-
-                    if (opcao2 == 1)
-                        buscar_disciplinas_periodo(&inicio_disc_todas, codigo, periodo, "printar"); // funcao bugada
+                    if (buscar_disciplinas_periodo(&inicio_disc_todas, codigo, periodo, "nao printar") == 0)
+                        printf("\nNao existe disciplina com esse codigo nesse periodo, insira ela na lista de disciplinas\n");
                     else
                     {
-                        printf("Lista de alunos:");
-                        buscar_alunos_disciplina(&inicio, codigo, periodo);
+                        printf("\nQual verificacao deseja fazer?\n[1]Dados da disciplina %s [2]Alunos matriculados nela no periodo %s\n", codigo, periodo);
+                        scanf("%d", &opcao2);
+
+                        if (opcao2 == 1)
+                        {
+                            buscar_disciplinas_periodo(&inicio_disc_todas, codigo, periodo, "printar");
+                            break;
+                        }
+                        else if (opcao2 == 2)
+                        {
+                            printf("Lista de alunos:");
+                            buscar_alunos_disciplina(&inicio, codigo, periodo,"printar");
+                            break;
+                        }
+                        else
+                        {
+                            printf("\nDigite uma opcao valida\n");
+                        }
                     }
                 }
-                //-------- falta busca de alunos em uma disciplina
             }
             else if (operacao == 2)
             { // insercao
@@ -519,41 +556,46 @@ int main()
                 char nome_dis[50];
                 char periodo[7];
                 int tipo_insercao;
-                printf("\nO que deseja fazer?\n[1]Inserir disciplina [2]Inserir aluno\n");
-                scanf("%d", &tipo_insercao);
-
-                if (tipo_insercao == 1)
-                { // inserir disciplina
-                    char nome_professor[100];
-                    char nome_materia[40];
-                    char codigo_disciplina[5];
-                    int creditos;
-                    printf("\nQual o codigo da disciplina? ");
-                    scanf(" %[^\n]", codigo_disciplina);
-                    printf("\nQual o nome da disciplina? ");
-                    scanf(" %[^\n]", nome_materia);
-                    printf("\nQual o nome do professor? ");
-                    scanf(" %[^\n]", nome_professor);
-                    printf("\nQuantos creditos a disciplina pode dar? ");
-                    scanf(" %d", &creditos);
-                    printf("\nQual o periodo da disciplina? ", codigo);
-                    scanf(" %[^\n]", periodo);
-                    inserir_disc(&inicio_disc_todas, nome_professor, nome_materia, codigo_disciplina, periodo, creditos);
-                }
-                else if (tipo_insercao == 2)
-                { // inserir disciplina em aluno
-                    char codigo_disciplina[5];
-                    printf("\nQual o codigo da disciplina? ");
-                    scanf(" %[^\n]", codigo_disciplina);
-                    printf("\nQual o codigo do aluno? ");
-                    scanf(" %[^\n]", codigo);
-                    printf("\nQual o periodo que o aluno %s cursou a disciplina? ", codigo);
-                    scanf(" %[^\n]", periodo);
-                    inserir_disc_aluno(&inicio_disc_todas, &inicio, codigo, codigo_disciplina, periodo,"printar");
-                }
-                else
+                while (1)
                 {
-                    break;
+                    printf("\nO que deseja fazer?\n[1]Inserir disciplina [2]Inserir aluno\n");
+                    scanf("%d", &tipo_insercao);
+
+                    if (tipo_insercao == 1)
+                    { // inserir disciplina
+                        char nome_professor[100];
+                        char nome_materia[40];
+                        char codigo_disciplina[5];
+                        int creditos;
+                        printf("\nQual o codigo da disciplina? ");
+                        scanf(" %[^\n]", codigo_disciplina);
+                        printf("\nQual o nome da disciplina? ");
+                        scanf(" %[^\n]", nome_materia);
+                        printf("\nQual o nome do professor? ");
+                        scanf(" %[^\n]", nome_professor);
+                        printf("\nQuantos creditos a disciplina pode dar? ");
+                        scanf(" %d", &creditos);
+                        printf("\nQual o periodo da disciplina? ", codigo);
+                        scanf(" %[^\n]", periodo);
+                        inserir_disc(&inicio_disc_todas, nome_professor, nome_materia, codigo_disciplina, periodo, creditos);
+                        break;
+                    }
+                    else if (tipo_insercao == 2)
+                    { // inserir disciplina em aluno
+                        char codigo_disciplina[5];
+                        printf("\nQual o codigo da disciplina? ");
+                        scanf(" %[^\n]", codigo_disciplina);
+                        printf("\nQual o codigo do aluno? ");
+                        scanf(" %[^\n]", codigo);
+                        printf("\nQual o periodo que o aluno %s cursou a disciplina? ", codigo);
+                        scanf(" %[^\n]", periodo);
+                        inserir_disc_aluno(&inicio_disc_todas, &inicio, codigo, codigo_disciplina, periodo, "printar");
+                        break;
+                    }
+                    else
+                    {
+                        printf("\nDigite uma opcao valida\n");
+                    }
                 }
             }
             else if (operacao == 3)
@@ -567,6 +609,10 @@ int main()
                 remove_disciplina(&inicio_disc_todas, codigo_disciplina, periodo, "printar");
                 remove_Disci_Do_Alu(&inicio, "XXXXX", codigo_disciplina, periodo, 0);
             }
+        }
+        if (lista != 2 && lista != 1 && (operacao==1 || operacao==2 || operacao ==3))
+        {
+            printf("\nDigite uma lista valida \n");
         }
     }
 
@@ -616,7 +662,7 @@ int main()
             free(auxDisciplina);
             auxDisciplina = tmp;
         }
-        //defindo o final da lista de disciplinas de um aluno
+        // defindo o final da lista de disciplinas de um aluno
         fprintf(arquivo_alunos, "----\n");
         free(auxAluno);
         auxAluno = tmp;
