@@ -324,21 +324,19 @@ int main()
     while (fscanf(arquivo_disciplinas, " %[^\n]", nome_prof) != -1)
     {
         char nome_disc[40];
-        char codigo[6];
-        char periodo[8];
+        char codigo[5];
+        char periodo[7];
         int creditos;
         fscanf(arquivo_disciplinas, " %[^\n]", nome_disc);
         fscanf(arquivo_disciplinas, " %[^\n]", codigo);
         fscanf(arquivo_disciplinas, " %[^\n]", periodo);
         fscanf(arquivo_disciplinas, "%d", &creditos);
 
-        // printf("nome:%s\ncodigo da materia:%s\nperiodo:%s\n", nome_prof, codigo, periodo);
-
         inserir_disc(&inicio_disc_todas, nome_prof, nome_disc, codigo, periodo, creditos);
     }
     fclose(arquivo_disciplinas);
 
-    // lista de alunos
+    // Importar lista de alunos salvas
     arquivo_alunos = fopen(lista_alunos, "r");
     if (arquivo_alunos == NULL)
         printf("Erro ao abrir lista de alunos salva");
@@ -607,7 +605,7 @@ int main()
         }
     }
 
-    // Frees necessarios
+    // Devolvendo memória ao sistema
 
     // liberar memoria da lista de disciplinas e passar salvamento em documento
     arquivo_disciplinas = fopen(nome_lista_disciplinas, "w");
