@@ -172,7 +172,7 @@ void inserir_disc_aluno(LDisciplinas **pInicioD, LAlunos **pInicio, char codigo[
             {
                 if (strcmp(aux->aluno.codigo, codigo) == 0)
                 {
-                    if (buscar_alunos_disciplina(&aux,codigo_disciplina,periodo,"nao printar")==1)
+                    if (buscar_alunos_disciplina(&aux,codigo_disciplina,periodo,"nao printar")==0)
                     {
                         LDisciplinas *novo_elemento = (LDisciplinas *)malloc(sizeof(LDisciplinas));
                         strcpy(novo_elemento->disciplina.codigo, codigo_disciplina);
