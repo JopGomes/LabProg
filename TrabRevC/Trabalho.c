@@ -38,9 +38,12 @@ int buscar_aluno_LA(LAlunos **inicio, char codigo_input[], char printar[])
     aux = *inicio;
     while (aux)
     {
-        if ((strcmp(aux->aluno.codigo, codigo_input) == 0) && (strcmp(printar, "printar") == 0))
+        if ((strcmp(aux->aluno.codigo, codigo_input) == 0))
         {
-            printf("\nNome:%s \ncodigo: %s \ncpf: %s \n ", aux->aluno.nome, aux->aluno.codigo, aux->aluno.cpf);
+            if ((strcmp(printar, "printar") == 0))
+            {
+                printf("\nNome:%s \ncodigo: %s \ncpf: %s \n ", aux->aluno.nome, aux->aluno.codigo, aux->aluno.cpf);
+            }
             achou++;
             return 1;
             break;
@@ -127,10 +130,10 @@ int buscar_alunos_disciplina(LAlunos **pInicio, char codigo_disc[], char periodo
     {
         int cursou;
         LDisciplinas *auxDA;
-        auxDA = auxAlu->aluno.inicio;                                                    // embaixo
-        cursou = buscar_disciplinas_periodo(&auxDA, codigo_disc, periodo, "nao printa"); // Melhorar para ordem de n, mudando o pInicio de cada aluno ( em tese ja passou por aqueles antes)
+        auxDA = auxAlu->aluno.inicio;                                                    
+        cursou = buscar_disciplinas_periodo(&auxDA, codigo_disc, periodo, "nao printa"); 
         if (cursou && strcmp(printar, "printar") == 0)
-            printf("\n%s", auxAlu->aluno.nome);
+            printf("%s, codigo: %s\n", auxAlu->aluno.nome, auxAlu->aluno.codigo);
         return 1;
         if (strcmp(printar, "printar") == 0)
         {
@@ -161,19 +164,20 @@ void inserir_disc(LDisciplinas **pInicio, char nome_professor[], char nome_mater
 }
 void inserir_aluno(LAlunos **pInicio, char nome_input[], char codigo_input[], char cpf_input[], char printar[])
 {
-    if (buscar_aluno_LA(pInicio, nome_input, "nao printar") == 0)
+    LAlunos *aux = *pInicio;
+    if (buscar_aluno_LA(&aux, codigo_input, "nao printar") == 0)
     {
         LAlunos *novo_elemento = (LAlunos *)malloc(sizeof(LAlunos)); // dar free()
         strcpy(novo_elemento->aluno.nome, nome_input);
         strcpy(novo_elemento->aluno.codigo, codigo_input);
         strcpy(novo_elemento->aluno.cpf, cpf_input);
-        novo_elemento->aluno.inicio = NULL; //------
+        novo_elemento->aluno.inicio = NULL; 
         novo_elemento->prox = *pInicio;
         *pInicio = novo_elemento;
     }
     else if ((strcmp(printar, "printar") == 0))
     {
-        printf("Esse aluno ja existe no banco de dados");
+        printf("\nJa existe aluno com esse codigo no banco de dados\n");
     }
 }
 void inserir_disc_aluno(LDisciplinas **pInicioD, LAlunos **pInicio, char codigo[], char codigo_disciplina[], char periodo[], char printar[])
@@ -194,7 +198,6 @@ void inserir_disc_aluno(LDisciplinas **pInicioD, LAlunos **pInicio, char codigo[
                     Odisciplina disciplina = aux_disciplinas->disciplina;
                     inserir_disc(&aux->aluno.inicio, disciplina.nome_professor, disciplina.nome_materia, codigo_disciplina, periodo, disciplina.creditos);
                     achou = 1;
-                    // inserir_materia()
                     break;
                 }
                 aux = aux->prox;
@@ -542,7 +545,7 @@ int main()
                     int tipo_insercao;
                     while (1)
                     {
-                        printf("\nO que deseja fazer?\n[1]Inserir disciplina [2]Inserir aluno\n");
+                        printf("\nO que deseja fazer?\n[1]Inserir disciplina  [2]Inserir um aluno em uma disciplina\n");
                         scanf("%d", &tipo_insercao);
 
                         if (tipo_insercao == 1)
