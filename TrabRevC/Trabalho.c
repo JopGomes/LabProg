@@ -351,7 +351,7 @@ void recuperar_alunos(LAlunos **pInicio, LDisciplinas *pInicio_disc){
             if (strcmp(codigo_disciplina, "----") == 0)
                 break;
             fscanf(arquivo_alunos, " %[^\n]", periodo_disciplina);
-            inserir_disc_aluno(pInicio_disc, pInicio, codigo, codigo_disciplina, periodo_disciplina, "nao printar");
+            inserir_disc_aluno(&pInicio_disc, pInicio, codigo, codigo_disciplina, periodo_disciplina, "nao printar");
         }
     }
     fclose(arquivo_alunos);
@@ -425,7 +425,7 @@ int main()
     recuperar_disciplinas(&inicio_disc_todas);
 
     // Importar lista de alunos salvas
-    recuperar_alunos(&inicio,&inicio_disc_todas);
+    recuperar_alunos(&inicio,inicio_disc_todas);
 
     while (1)
     {
