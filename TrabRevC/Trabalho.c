@@ -213,7 +213,6 @@ void inserir_disc_aluno(LDisciplinas **pInicioD, LAlunos **pInicio, char codigo[
         printf("\nNao existe disciplina com esse codigo, insira ela na lista de disciplinas");
     }
 }
-
 int remove_disciplina(LDisciplinas **pInicio, char codigo_disc[], char periodo[], char printar[])
 {
     LDisciplinas *aux, *ant = NULL;
@@ -304,24 +303,14 @@ void remove_LA(LAlunos **pInicio, char codigo[])
         printf("\nNao ha aluno com esse codigo\n");
     }
 }
-
-int main()
-{
+void recuperar_disciplinas(LDisciplinas **pInicio){
     char nome_lista_disciplinas[] = "arquivos_de_textos/lista_disciplinas.txt";
-    char lista_alunos[] = "arquivos_de_textos/lista_alunos.txt";
     FILE *arquivo_disciplinas;
-    FILE *arquivo_alunos;
     arquivo_disciplinas = fopen(nome_lista_disciplinas, "r");
     if (arquivo_disciplinas == NULL)
         printf("não abriu lista de disciplinas");
 
-    LAlunos *inicio = NULL;
-
-    LDisciplinas *inicio_disc_todas = NULL;
-
-    // buscar lista de disciplinas ja existente
     char nome_prof[100];
-
     while (fscanf(arquivo_disciplinas, " %[^\n]", nome_prof) != -1)
     {
         char nome_disc[40];
@@ -333,11 +322,13 @@ int main()
         fscanf(arquivo_disciplinas, " %[^\n]", periodo);
         fscanf(arquivo_disciplinas, "%d", &creditos);
 
-        inserir_disc(&inicio_disc_todas, nome_prof, nome_disc, codigo, periodo, creditos);
+        inserir_disc(pInicio, nome_prof, nome_disc, codigo, periodo, creditos);
     }
     fclose(arquivo_disciplinas);
-
-    // Importar lista de alunos salvas
+}
+void recuperar_alunos(LAlunos **pInicio, LDisciplinas *pInicio_disc){
+    char lista_alunos[] = "arquivos_de_textos/lista_alunos.txt";
+    FILE *arquivo_alunos;
     arquivo_alunos = fopen(lista_alunos, "r");
     if (arquivo_alunos == NULL)
         printf("Erro ao abrir lista de alunos salva");
@@ -352,7 +343,7 @@ int main()
         fscanf(arquivo_alunos, " %[^\n]", codigo);
         fscanf(arquivo_alunos, " %[^\n]", cpf);
 
-        inserir_aluno(&inicio, nome_aluno, codigo, cpf, "nao printar");
+        inserir_aluno(pInicio, nome_aluno, codigo, cpf, "nao printar");
 
         while (1)
         {
@@ -360,10 +351,81 @@ int main()
             if (strcmp(codigo_disciplina, "----") == 0)
                 break;
             fscanf(arquivo_alunos, " %[^\n]", periodo_disciplina);
-            inserir_disc_aluno(&inicio_disc_todas, &inicio, codigo, codigo_disciplina, periodo_disciplina, "nao printar");
+            inserir_disc_aluno(pInicio_disc, pInicio, codigo, codigo_disciplina, periodo_disciplina, "nao printar");
         }
     }
     fclose(arquivo_alunos);
+}
+void salvar_disciplinas(LDisciplinas **pInicio){
+    char nome_lista_disciplinas[] = "arquivos_de_textos/lista_disciplinas.txt";
+    FILE *arquivo_disciplinas;
+    arquivo_disciplinas = fopen(nome_lista_disciplinas, "w");
+    if (arquivo_disciplinas == NULL)
+        printf("não abriu lista de disciplinas");
+    LDisciplinas *aux = *pInicio;
+    
+    while (aux)
+    {
+        LDisciplinas *tmp = aux->prox;
+        fprintf(arquivo_disciplinas, "%s\n", aux->disciplina.nome_professor);
+        fprintf(arquivo_disciplinas, "%s\n", aux->disciplina.nome_materia);
+        fprintf(arquivo_disciplinas, "%s\n", aux->disciplina.codigo);
+        fprintf(arquivo_disciplinas, "%s\n", aux->disciplina.periodo);
+        fprintf(arquivo_disciplinas, "%d\n", aux->disciplina.creditos);
+        free(aux);
+        aux = tmp;
+    }
+
+    fclose(arquivo_disciplinas);    
+}
+void salvar_alunos(LAlunos **pInicio){
+    char lista_alunos[] = "arquivos_de_textos/lista_alunos.txt";
+    FILE *arquivo_alunos;
+
+    arquivo_alunos = fopen(lista_alunos, "w");
+    if (arquivo_alunos == NULL)
+        printf("Falha na abertura do aquivo\n");
+
+    LAlunos *auxAluno;
+    auxAluno = *pInicio;
+    while (auxAluno)
+    {
+        LAlunos *tmp = auxAluno->prox;
+        fprintf(arquivo_alunos, "%s\n", auxAluno->aluno.nome);
+        fprintf(arquivo_alunos, "%s\n", auxAluno->aluno.codigo);
+        fprintf(arquivo_alunos, "%s\n", auxAluno->aluno.cpf);
+
+        // liberar memoria da lista de disciplinas de um aluno
+        LDisciplinas *auxDisciplina;
+        auxDisciplina = auxAluno->aluno.inicio;
+        while (auxDisciplina)
+        {
+            LDisciplinas *tmp = auxDisciplina->prox;
+            fprintf(arquivo_alunos, "%s\n", auxDisciplina->disciplina.codigo);
+            fprintf(arquivo_alunos, "%s\n", auxDisciplina->disciplina.periodo);
+            free(auxDisciplina);
+            auxDisciplina = tmp;
+        }
+        // defindo o final da lista de disciplinas de um aluno
+        fprintf(arquivo_alunos, "----\n");
+        free(auxAluno);
+        auxAluno = tmp;
+    }
+    fclose(arquivo_alunos);
+}
+
+
+int main()
+{
+    LAlunos *inicio = NULL;
+    
+    LDisciplinas *inicio_disc_todas = NULL;
+
+    // buscar lista de disciplinas ja existente
+    recuperar_disciplinas(&inicio_disc_todas);
+
+    // Importar lista de alunos salvas
+    recuperar_alunos(&inicio,&inicio_disc_todas);
 
     while (1)
     {
@@ -607,57 +669,11 @@ int main()
     }
 
     // Devolvendo memória ao sistema
-
     // liberar memoria da lista de disciplinas e passar salvamento em documento
-    arquivo_disciplinas = fopen(nome_lista_disciplinas, "w");
-
-    LDisciplinas *aux;
-    aux = inicio_disc_todas;
-
-    while (aux)
-    {
-        LDisciplinas *tmp = aux->prox;
-        fprintf(arquivo_disciplinas, "%s\n", aux->disciplina.nome_professor);
-        fprintf(arquivo_disciplinas, "%s\n", aux->disciplina.nome_materia);
-        fprintf(arquivo_disciplinas, "%s\n", aux->disciplina.codigo);
-        fprintf(arquivo_disciplinas, "%s\n", aux->disciplina.periodo);
-        fprintf(arquivo_disciplinas, "%d\n", aux->disciplina.creditos);
-        free(aux);
-        aux = tmp;
-    }
-
-    fclose(arquivo_disciplinas);
+    salvar_disciplinas(&inicio_disc_todas);
 
     //  liberar memoria da lista de alunos
-    arquivo_alunos = fopen(lista_alunos, "w");
-    if (arquivo_alunos == NULL)
-        printf("Falha na abertura do aquivo\n");
-    LAlunos *auxAluno;
-    auxAluno = inicio;
-    while (auxAluno)
-    {
-        LAlunos *tmp = auxAluno->prox;
-        fprintf(arquivo_alunos, "%s\n", auxAluno->aluno.nome);
-        fprintf(arquivo_alunos, "%s\n", auxAluno->aluno.codigo);
-        fprintf(arquivo_alunos, "%s\n", auxAluno->aluno.cpf);
-
-        // liberar memoria da lista de disciplinas de um aluno
-        LDisciplinas *auxDisciplina;
-        auxDisciplina = auxAluno->aluno.inicio;
-        while (auxDisciplina)
-        {
-            LDisciplinas *tmp = auxDisciplina->prox;
-            fprintf(arquivo_alunos, "%s\n", auxDisciplina->disciplina.codigo);
-            fprintf(arquivo_alunos, "%s\n", auxDisciplina->disciplina.periodo);
-            free(auxDisciplina);
-            auxDisciplina = tmp;
-        }
-        // defindo o final da lista de disciplinas de um aluno
-        fprintf(arquivo_alunos, "----\n");
-        free(auxAluno);
-        auxAluno = tmp;
-    }
-    fclose(arquivo_alunos);
+    salvar_alunos(&inicio);
 
     return 0;
 }
