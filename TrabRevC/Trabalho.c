@@ -79,8 +79,9 @@ int buscar_disciplinas_periodo(LDisciplinas **pInicio, char codigo_disciplina[],
                     printf("\nProfessor: %s", aux_disciplinas->disciplina.nome_professor);
                     printf("\nCreditos da disciplina:%d \n", aux_disciplinas->disciplina.creditos);
                 }
+                printf("\n");
             }
-            printf("\n");
+            
             if (acabar)
             {
                 return 1;
@@ -125,23 +126,20 @@ int buscar_alunos_disciplina(LAlunos **pInicio, char codigo_disc[], char periodo
 {
     LAlunos *auxAlu;
     auxAlu = *pInicio;
+    int cursou;
 
     while (auxAlu)
     {
-        int cursou;
+        
         LDisciplinas *auxDA;
         auxDA = auxAlu->aluno.inicio;                                                    
         cursou = buscar_disciplinas_periodo(&auxDA, codigo_disc, periodo, "nao printa"); 
         if (cursou && strcmp(printar, "printar") == 0)
-            printf("%s, codigo: %s\n", auxAlu->aluno.nome, auxAlu->aluno.codigo);
-        return 1;
-        if (strcmp(printar, "printar") == 0)
-        {
-            printf("\n");
-        }
+            printf("\n%s, codigo: %s\n", auxAlu->aluno.nome, auxAlu->aluno.codigo);
+        
         auxAlu = auxAlu->prox;
     }
-
+    if(cursou) return 1;
     return 0;
 }
 void inserir_disc(LDisciplinas **pInicio, char nome_professor[], char nome_materia[], char codigo_disciplina[], char periodo[], int creditos)
@@ -503,7 +501,7 @@ int main()
                     int opcao2;
                     printf("\nQual o periodo da disciplina? ");
                     scanf(" %[^\n]", periodo);
-                    printf("\nLista de disciplinas:");
+                    printf("\nLista de disciplinas:\n");
                     buscar_disciplinas_periodo(&inicio_disc_todas, "XXXX", periodo, "printar");
                     printf("\nQual o codigo da disciplina? ");
                     scanf(" %[^\n]", codigo);
@@ -526,7 +524,7 @@ int main()
                             }
                             else if (opcao2 == 2)
                             {
-                                printf("Lista de alunos:");
+                                printf("Lista de alunos:\n");
                                 buscar_alunos_disciplina(&inicio, codigo, periodo, "printar");
                                 break;
                             }
