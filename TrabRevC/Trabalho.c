@@ -431,6 +431,18 @@ int validar_dados(char entrada[], int quantidade)
 
     return 1;
 }
+int validar_periodo(char periodo[])
+{
+    for (int i = 0; i < 6; i++)
+    {
+        if ((periodo[4] != '.') || (i != 4 && ((periodo[i] > '9') || (periodo[i] < '0')) || (periodo[6]) != '\0'))
+        {
+            printf("\nInsira o periodo no formato adequado\n");
+            return 0;
+        }
+    }
+    return 1;
+}
 
 int main()
 {
@@ -488,8 +500,12 @@ int main()
                                 while (1)
                                 {
                                     int opcao3;
-                                    printf("Qual o periodo? ");
-                                    scanf(" %[^\n]", periodo);
+                                    do
+                                    {
+                                        printf("Qual o periodo? ");
+                                        scanf(" %[^\n]", periodo);
+                                    } while (!validar_periodo(periodo));
+
                                     buscar_disciplinas_aluno(&inicio, codigo, periodo); // buscar materia no sistema
                                     printf("\nDeseja continuar?\n[1]Sim [2]Nao\n");
                                     scanf("%d", &opcao3);
@@ -551,8 +567,12 @@ int main()
                                 scanf(" %[^\n]", codigo);
                             } while (!validar_dados(codigo, 5));
 
-                            printf("\nQual o periodo que o aluno %s cursou a disciplina? ", codigo);
-                            scanf(" %[^\n]", periodo);
+                            do
+                            {
+                                printf("\nQual o periodo que o aluno %s cursou a disciplina (xxxx.x)? ", codigo);
+                                scanf(" %[^\n]", periodo);
+                            } while (!validar_periodo(periodo));
+
                             inserir_disc_aluno(&inicio_disc_todas, &inicio, codigo, codigo_disciplina, periodo, "nao printar");
                             do
                             {
@@ -591,14 +611,15 @@ int main()
                         {
                             char codigo_disciplina[5];
                             char periodo[7];
-                            do
-                            {
+                            do{
                                 printf("Qual o codigo da disciplina? ");
                                 scanf(" %[^\n]", codigo_disciplina);
                             } while (!validar_dados(codigo_disciplina, 4));
-
-                            printf("Em qual periodo foi cursada? ");
-                            scanf(" %[^\n]", periodo);
+                            do{
+                                printf("Em qual periodo foi cursada (xxxx.x)? ");
+                                scanf(" %[^\n]", periodo);
+                            }while(!validar_periodo(periodo));
+                            
                             remove_Disci_Do_Alu(&inicio, codigo, codigo_disciplina, periodo, 1);
                             break;
                         }
@@ -621,8 +642,11 @@ int main()
                     // consulta
                     char periodo[7];
                     int opcao2;
-                    printf("\nQual o periodo da disciplina? ");
-                    scanf(" %[^\n]", periodo);
+                    do{
+                        printf("\nQual o periodo da disciplina (xxxx.x)? ");
+                        scanf(" %[^\n]", periodo);  
+                    }while(!validar_periodo(periodo));
+                    
                     printf("\nLista de disciplinas:\n");
                     buscar_disciplinas_periodo(&inicio_disc_todas, "XXXX", periodo, "printar");
                     do
@@ -686,8 +710,11 @@ int main()
                             scanf(" %[^\n]", nome_professor);
                             printf("\nQuantos creditos a disciplina pode dar? ");
                             scanf(" %d", &creditos);
-                            printf("\nQual o periodo da disciplina %s? ", codigo_disciplina);
-                            scanf(" %[^\n]", periodo);
+                            do{
+                                printf("\nQual o periodo da disciplina %s (xxxx.x)? ", codigo_disciplina);
+                                scanf(" %[^\n]", periodo);
+                            }while(!validar_periodo(periodo));
+                            
                             inserir_disc(&inicio_disc_todas, nome_professor, nome_materia, codigo_disciplina, periodo, creditos);
                             break;
                         }
@@ -704,9 +731,11 @@ int main()
                                 printf("\nQual o codigo do aluno (5 digitos)? ");
                                 scanf(" %[^\n]", codigo);
                             } while (!validar_dados(codigo, 5));
-
-                            printf("\nQual o periodo que o aluno %s cursou a disciplina? ", codigo);
-                            scanf(" %[^\n]", periodo);
+                            do{
+                                printf("\nQual o periodo que o aluno %s cursou a disciplina (xxxx.x)? ", codigo);
+                                scanf(" %[^\n]", periodo); 
+                            }while(!validar_periodo(periodo));
+                            
                             inserir_disc_aluno(&inicio_disc_todas, &inicio, codigo, codigo_disciplina, periodo, "printar");
                             break;
                         }
@@ -725,8 +754,11 @@ int main()
                         printf("\nQual o codigo da disciplina (4 digitos)? ");
                         scanf(" %[^\n]", codigo_disciplina);
                     } while (!validar_dados(codigo_disciplina, 4));
-                    printf("\nQual o periodo que a disciplina %s foi cursada? ", codigo_disciplina);
-                    scanf(" %[^\n]", periodo);
+                    do{
+                        printf("\nQual o periodo que a disciplina %s foi cursada? ", codigo_disciplina);
+                        scanf(" %[^\n]", periodo);  
+                    }while(!validar_periodo(periodo));
+                    
                     remove_disciplina(&inicio_disc_todas, codigo_disciplina, periodo, "printar");
                     remove_Disci_Do_Alu(&inicio, "XXXXX", codigo_disciplina, periodo, 0);
                 }

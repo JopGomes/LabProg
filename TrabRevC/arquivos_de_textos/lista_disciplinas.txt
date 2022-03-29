@@ -1,20 +1,20 @@
-Rotava
-Sistemas digitais
-2011
-2022.1
-60
-Duarte
-Lab Prog
-2007
-2022.1
-50
-veloso
-matematica discreta
-2009
-2022.1
-33
 Rocha
 Calculo II
 2008
 2020.2
 20
+veloso
+matematica discreta
+2009
+2022.1
+33
+Duarte
+Lab Prog
+2007
+2022.1
+50
+Rotava
+Sistemas digitais
+2011
+2022.1
+60
