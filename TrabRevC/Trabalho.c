@@ -502,7 +502,7 @@ int main()
                                     int opcao3;
                                     do
                                     {
-                                        printf("Qual o periodo? ");
+                                        printf("Qual o periodo (xxxx.x)? ");
                                         scanf(" %[^\n]", periodo);
                                     } while (!validar_periodo(periodo));
 
@@ -563,7 +563,7 @@ int main()
                             } while (!validar_dados(codigo_disciplina, 4));
                             do
                             {
-                                printf("\nQual o codigo do aluno? ");
+                                printf("\nQual o codigo do aluno ( 5 digitos)? ");
                                 scanf(" %[^\n]", codigo);
                             } while (!validar_dados(codigo, 5));
 
@@ -612,7 +612,7 @@ int main()
                             char codigo_disciplina[5];
                             char periodo[7];
                             do{
-                                printf("Qual o codigo da disciplina? ");
+                                printf("Qual o codigo da disciplina ( 4 digitos )? ");
                                 scanf(" %[^\n]", codigo_disciplina);
                             } while (!validar_dados(codigo_disciplina, 4));
                             do{
@@ -651,7 +651,7 @@ int main()
                     buscar_disciplinas_periodo(&inicio_disc_todas, "XXXX", periodo, "printar");
                     do
                     {
-                        printf("\nQual o codigo da disciplina? ");
+                        printf("\nQual o codigo da disciplina ( 4 digitos )? ");
                         scanf(" %[^\n]", codigo_disc);
                     } while (!validar_dados(codigo_disc, 4));
 
