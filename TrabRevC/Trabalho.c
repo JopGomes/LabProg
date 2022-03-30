@@ -455,7 +455,7 @@ int main()
 
     // Importar lista de alunos salvas
     recuperar_alunos(&inicio, &inicio_disc_todas);
-
+    printf("\nSistema de Matriculas criado por Pontes e Joseph Vieira\n");
     while (1)
     {
         int operacao, lista;
