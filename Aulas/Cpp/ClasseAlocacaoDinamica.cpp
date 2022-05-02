@@ -29,6 +29,6 @@ int main()
 {
     MinhaClasse c1;
     MinhaClasse c2(c1);
-    cout << c1.ponteiro[1]<<" "<< c1.a;
+    cout << c1.ponteiro[0]<<" "<< c1.a;
     return 0;
 }
