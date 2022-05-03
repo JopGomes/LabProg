@@ -11,7 +11,9 @@
         "string_view": "c",
         "ranges": "c",
         "iostream": "cpp",
-        "cmath": "cpp"
+        "cmath": "cpp",
+        "numbers": "cpp",
+        "algorithm": "cpp"
     },
     "C_Cpp.errorSquiggles": "Disabled"
 }
