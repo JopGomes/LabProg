@@ -114,25 +114,48 @@ public:
     }
     state simular()
     {
-        int des = 0, atendidosC = 0,atendidosE = 0, tempoPassadoC = 0, tempoPassadoE = 0;
+        //Tem jeito melhor de fazer mas varei o q era pra fazer nesse metodo quanto a printar e to adequando
+        int des = 0, atendidosC = 0,atendidosE = 0, tempoPassadoC = 0, tempoPassadoE = 0,tempMax{};
+        bool tempoA[1000]{}, tempoD[1000]{};
         state st;
         for (int i = 0; tamMaximo > i && caixaC[i].getTempoChegada() != -1; i++)
         {
             if (tempoPassadoC-caixaC[i].getTempoChegada() >= caixaC[i].getTempoEspera())
             {
+                tempoD[tempoPassadoC]=true;
                 des++;
                 continue;
             }
             else
             {
+               for(int k=tempoPassadoC; tempoPassadoC+caixaC[i].getTempoServico()>k;k++) tempoA[k]=true;
                 tempoPassadoC += caixaC[i].getTempoServico();
                 atendidosC++;
             }
         }
+        if(tempoPassadoC>tempMax)tempMax=tempoPassadoC;
         for (int i = 0; tamMaximo > i && caixaE[i].getTempoChegada() != -1; i++)
         {
-            tempoPassadoE += caixaC[i].getTempoServico();
+            for(int k=tempoPassadoE; tempoPassadoE+caixaE[i].getTempoServico()>k;k++) {tempoA[k]=true;}
+            tempoPassadoE += caixaE[i].getTempoServico();
             atendidosE++;
+        }
+        if(tempoPassadoE>tempMax)tempMax=tempoPassadoE;
+        for(int i=0;tempMax+2>i;i++){
+            cout<<"tempo = ";
+            if(tempoA[i] && tempoD[i]){
+                cout << i <<" Desistentes: Sim" <<" Sendo atendidos:Sim";
+            }
+            if(tempoA[i] && !tempoD[i]){
+                cout << i <<" Desistentes: Nao" <<" Sendo atendidos:Sim";
+            }
+            if(!tempoA[i] && tempoD[i]){
+                cout << i <<" Desistentes: Sim" <<" Sendo atendidos:Nao";
+            }
+            if(!tempoA[i] && !tempoD[i]){
+                cout << i <<" Desistentes: Nao" <<" Sendo atendidos:Nao";
+            }
+            cout <<"\n";
         }
         double info[2]{},medE{},medC{};
         info[0]=des;
@@ -150,7 +173,7 @@ public:
         st.desistentes=info[0];
         return st;
     }
-    ~Deque()
+    ~Banco()
     {
         delete[] caixaC;
         delete[] caixaE;

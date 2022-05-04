@@ -29,6 +29,13 @@ public:
     {
         return max;
     }
+    // eu varei o que era enum, mas é so pra dizer se é na frente ou atras
+    // ou seja fiz algo mais complexo kkk
+    //so criar um enum {
+    //frente=0,
+    //retaguarda,
+    //}
+    // e dps receber como parametro e colocar o enum0 com esse valor de 0 ou o valor de atual
     void inserir(int enum0, int valor)
     {
         int temp2{};
