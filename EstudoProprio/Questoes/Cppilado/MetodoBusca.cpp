@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <iostream>
+#include <algorithm> //para usar o find
 using namespace std;
 
 class MetodoBusca
@@ -11,7 +12,7 @@ class MetodoBusca
     MetodoBusca(int max);
     bool inserir(int e);
     bool remover(int i);
-    bool busca(int e);
+    virtual bool busca(int e);
     ~MetodoBusca(){
         delete[] vetor;
     }
@@ -23,6 +24,8 @@ MetodoBusca::MetodoBusca(int maxi)
     max=maxi;
     count = 0;
 }
+bool MetodoBusca::busca(int e){return true;}
+
 bool MetodoBusca::inserir(int e)
 {
     int i=0;
@@ -42,10 +45,6 @@ bool MetodoBusca::inserir(int e)
     }
 }
 
-bool MetodoBusca::busca(int e)
-{
-    
-}
 
 bool MetodoBusca::remover(int e)
 {
@@ -71,7 +70,7 @@ class BuscaLinear : public MetodoBusca
     public:
 
     BuscaLinear(int max) : MetodoBusca(max){}
-    busca(int e)
+    bool busca(int e)
     {
         for (int i = 0; count >= i; i++)
         {
@@ -89,21 +88,43 @@ class BuscaBinaria : public MetodoBusca
     public:
     
     BuscaBinaria(int max) : MetodoBusca(max){}
-    busca(int e)
+    bool busca(int e)
     {
         int r=count;
         int l=0;
         int pivot= l + (r-l)/2;
-        while(pivot!=r){
+        while(l<=r){
+            pivot= l + (r-l)/2;
             if(e>vetor[pivot]){
-                l=pivot;
+                l=pivot+1;
             }
             else if(e<vetor[pivot]){
-                r=pivot;
+                r=pivot-1;
             }
             else{
                 return true;
             }
+        }
+        return false;
+    }
+};
+
+class BuscaAleatoria : public MetodoBusca
+{
+    public:
+    
+    BuscaAleatoria(int max) : MetodoBusca(max){}
+    bool busca(int e)
+    {
+        const int m=50;
+        bool conferir[m*2]{};
+        int random=rand()%(m*2);
+        while(find(conferir, conferir+m ,false) != (conferir+m)) {
+            while(conferir[random]){
+                random=rand()%(m*2);
+            }
+            conferir[random]=true;
+            if(e==vetor[random]) return true;
         }
         return false;
     }
@@ -122,11 +143,13 @@ int main()
     int v[100];
     BuscaBinaria mb1(n);
     BuscaLinear mb2(n);
+    BuscaAleatoria mb3(n);
     for(int i=0; i<n;i++){
         k=rand()%m;
         v[i]=k;
     }
     k=rand()%m;
-    cout <<"BuscaBinaria:"<<(buscar(mb1,v,n,k)?"Sim":"Nao")<<"\n";
     cout <<"BuscaLinear:"<<(buscar(mb2,v,n,k)?"Sim":"Nao")<<"\n";
+    cout <<"BuscaBinaria:"<<(buscar(mb1,v,n,k)?"Sim":"Nao")<<"\n";
+    cout <<"BuscaAleatoria:"<<(buscar(mb3,v,n,k)?"Sim":"Nao")<<"\n";
 }
