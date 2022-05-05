@@ -1,6 +1,5 @@
 // falta criar a funcionalidade de Dama voltando e limpado o tabuleiro.
 
-
 #include <stdio.h>
 #include <iostream>
 using namespace std;
@@ -69,8 +68,11 @@ public:
         {
             if (count % 2 == 0)
             {
-                if(tabuleiro[i][j] == 'W' ||tabuleiro[i][j] == 'Q'){}
-                else{
+                if (tabuleiro[i][j] == 'W' || tabuleiro[i][j] == 'Q')
+                {
+                }
+                else
+                {
                     cout << "Jogada Invalida";
                     return;
                 }
@@ -95,8 +97,11 @@ public:
             }
             else
             {
-                if(tabuleiro[i][j] == 'B' ||tabuleiro[i][j] == 'K'){}
-                else{
+                if (tabuleiro[i][j] == 'B' || tabuleiro[i][j] == 'K')
+                {
+                }
+                else
+                {
                     cout << "Jogada Invalida";
                     return;
                 }
@@ -124,8 +129,11 @@ public:
         {
             if (count % 2 == 0)
             {
-                if(tabuleiro[i][j] == 'W' ||tabuleiro[i][j] == 'Q'){}
-                else{
+                if (tabuleiro[i][j] == 'W' || tabuleiro[i][j] == 'Q')
+                {
+                }
+                else
+                {
                     cout << "Jogada Invalida";
                     return;
                 }
@@ -150,8 +158,11 @@ public:
             }
             else
             {
-                if(tabuleiro[i][j] == 'B' ||tabuleiro[i][j] == 'K'){}
-                else{
+                if (tabuleiro[i][j] == 'B' || tabuleiro[i][j] == 'K')
+                {
+                }
+                else
+                {
                     cout << "Jogada Invalida";
                     return;
                 }
@@ -215,21 +226,26 @@ public:
 int main()
 {
     Tabuleiro p;
-    p.imprimir();
 
     while (p.termino())
     {
+        p.imprimir();
+
         int a, b, lado;
-        cout << "Peca na linha,coluna \n lado que vai\n [1] Esquerda \n [2]Direita\n";
-        cin >> a >> b >> lado;
+        cout << "Peca na linha:";
+        cin >> a;
+        cout << "\nPeca na coluna:";
+        cin >> b;
+        // colocar um if pra ver se é normal ou queen;
+        cout << " Para qual lado que vai\n [1] Esquerda \n [2]Direita\n";
+        cin >> lado;
         if (lado == 1)
         {
-            p.Jogada(a-1, b-1, esquerda);
+            p.Jogada(a - 1, b - 1, esquerda);
         }
         if (lado == 2)
         {
-            p.Jogada(a-1, b-1, direita);
+            p.Jogada(a - 1, b - 1, direita);
         }
-        p.imprimir();
     }
 }
