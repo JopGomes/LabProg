@@ -130,6 +130,8 @@ int main()
     ld.imprimir();
     ld.remover();
     ld.imprimir();
+    ld.inserir(60);
+    ld.imprimir();
     cout << "Inicio\n";
     Inicio ld2;
     ld2.inserir(50);
@@ -140,5 +142,7 @@ int main()
     ld2.remover();
     ld2.imprimir();
     ld2.remover();
+    ld2.imprimir();
+    ld2.inserir(60);
     ld2.imprimir();
 }
