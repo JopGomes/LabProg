@@ -13,7 +13,8 @@
         "iostream": "cpp",
         "cmath": "cpp",
         "numbers": "cpp",
-        "algorithm": "cpp"
+        "algorithm": "cpp",
+        "new": "cpp"
     },
     "C_Cpp.errorSquiggles": "Disabled"
 }
