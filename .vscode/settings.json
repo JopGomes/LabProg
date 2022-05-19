@@ -14,7 +14,8 @@
         "cmath": "cpp",
         "numbers": "cpp",
         "algorithm": "cpp",
-        "new": "cpp"
+        "new": "cpp",
+        "ostream": "cpp"
     },
     "C_Cpp.errorSquiggles": "Disabled"
 }
