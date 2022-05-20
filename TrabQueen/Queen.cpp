@@ -13,6 +13,8 @@ enum Movimento
     direita,
 };
 
+
+
 class Tabuleiro
 {
 private:
