@@ -37,8 +37,18 @@ class NumeroRacional{
     NumeroRacional operator*(NumeroRacional rhs){
         return NumeroRacional(up*rhs.up,dw*rhs.dw);
     }
-    NumeroRacional& operator=(NumeroRacional rhs){
-            
+    void operator=(NumeroRacional rhs){
+        up=rhs.up;
+        dw=rhs.dw;
+    }
+    NumeroRacional operator ++(){
+        NumeroRacional temp(up,dw);
+        up+=dw;
+        return temp;
+    }
+    operator++(int){
+        up+=dw;
+        return *this;
     }
     operator float(){
         double c= (up+0.0)/dw +0.0;
@@ -52,5 +62,5 @@ int main(){
     b.frac();
     (a+b).frac();
     (a-b).frac();
-    cout << (float) a;
+    cout << (float) a<< "\n" << a;
 }

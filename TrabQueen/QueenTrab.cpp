@@ -2,16 +2,25 @@
 #include <iostream>
 using namespace std;
 
-enum Tipo
+enum Type
 {
     Peao,
     Q,
 };
-enum Jogador
+enum Player
 {
     W,
     B,
     V
+};
+enum Direction{
+    lf,
+    rt,
+};
+
+enum Opponent{
+    comp,
+    frnd,
 };
 
 class Peca
@@ -20,32 +29,32 @@ protected:
     char pec;
 public:
     Peca() { pec = ' '; }
-    Peca(Tipo P, Jogador T){
+    Peca(Type P, Player T){
         if(T==W && P==Peao){pec='w';}
         if(T==B && P==Peao){pec='b';}
         if(T==W && P==Q){pec='W';}
         if(T==B && P==Q){pec='B';}
     }
     char getChar() { return pec; }
-    Jogador getJogador();
+    Player getPlayer();
 };
 
 class Vazio: public Peca{
     public:
     Vazio():Peca(){}
-    Jogador getJogador(){return V;}
+    Player getPlayer(){return V;}
 };
 class Comum:public Peca{
-    Jogador Pl;
+    Player Pl;
     public :
-    Comum(Jogador T) : Peca(Peao, T){Pl=T;}
-    Jogador getJogador(){return Pl;}
+    Comum(Player T) : Peca(Peao, T){Pl=T;}
+    Player getPlayer(){return Pl;}
 };
 class Queen:public Peca{
-    Jogador Pl;
+    Player Pl;
     public :
-    Queen(Jogador T) : Peca(Q, T){Pl=T;}
-    Jogador getJogador(){return Pl;}
+    Queen(Player T) : Peca(Q, T){Pl=T;}
+    Player getPlayer(){return Pl;}
 };
 
 class Tabuleiro
@@ -99,13 +108,21 @@ public:
         }
         cout << "\n";
     }
-    bool isValid(int lin, int col, Jogador Player){
-        if(tabuleiro[lin][col].getJogador()==V)return true;
-        else if(tabuleiro[lin][col].getJogador==Player)return false;
-        
+    bool isValid(int lin, int col, Player Player){
+        if(lin>=8 || col >=8 || lin<0 || col <0) return false; 
+        else if(tabuleiro[lin][col].getPlayer()==Player)return false;
+        else return true;
     }
-    void Jogada(){
-
+    void JogadaComp();
+    void Jogada(int lin, int col, Direction T, Player Pl,Opponent Op ){
+        if(T==lf){
+            if(Pl==W){}
+            else{}
+        }
+        else{
+            if(Pl==W){}
+            else{}
+        }
     }
     ~Tabuleiro()
     {
