@@ -116,8 +116,16 @@ public:
     void JogadaComp();
     void Jogada(int lin, int col, Direction T, Player Pl,Opponent Op ){
         if(T==lf){
-            if(Pl==W){}
-            else{}
+            if(Pl==W){
+                if(isValid(lin+1,col-1,Pl)){
+                    
+                }
+                else{cout << "Jogada Invalida";}
+            }
+            else{
+                if(isValid(lin-1,col-1,Pl)){}
+                else{cout << "Jogada Invalida"}
+            }
         }
         else{
             if(Pl==W){}
