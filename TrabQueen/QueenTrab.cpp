@@ -1,3 +1,7 @@
+// falta dama
+// falta resolver o isValid ( OLHAR SE O LUGAR QUE TA PEGANDO TEM A PEÇA Q EU QUERO)
+// falta algumas outras coisas
+
 #include <stdio.h>
 #include <iostream>
 using namespace std;
