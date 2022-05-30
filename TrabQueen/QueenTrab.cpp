@@ -1,6 +1,10 @@
 // falta dama
 // falta IA decente
 // falta SFML
+// static count numero de peças
+// ver se tem jogada valida
+//anda frente ou pra tras
+// tratar caso de comer para tras
 
 #include <stdio.h>
 #include <iostream>
@@ -57,14 +61,12 @@ public:
         }
     }
     char getChar() { return pec; }
-    virtual Player getPlayer(){return V;};
 };
 
 class Vazio : public Peca
 {
 public:
     Vazio() : Peca() {}
-    Player getPlayer() { return V; }
 };
 class Comum : public Peca
 {
@@ -72,7 +74,6 @@ class Comum : public Peca
 
 public:
     Comum(Player T) : Peca(Peao, T) { Pl = T; }
-    Player getPlayer() { return Pl; }
 };
 class Queen : public Peca
 {
@@ -80,7 +81,6 @@ class Queen : public Peca
 
 public:
     Queen(Player T) : Peca(Q, T) { Pl = T; }
-    Player getPlayer() { return Pl; }
 };
 
 class Tabuleiro
@@ -138,33 +138,49 @@ public:
     {
         if (lin >= 8 || col >= 8 || lin < 0 || col < 0 || Tlin >= 8 || Tcol >= 8 || Tlin < 0 || Tcol < 0)
             return false;
-        else if (tabuleiro[Tlin][Tcol].getPlayer() == Player)
-            return false;
-        else if (tabuleiro[Tlin][Tcol].getChar() != VAZIO && (lin == 7 || col == 7 || lin == 0 || col == 0))
-        {
-            return false;
+        if(Tlin == lin || Tcol == col){return false;}
+        if(tabuleiro[lin][col].getChar()== VAZIO){return false;}
+        if(Player==W){
+            if(tabuleiro[lin][col].getChar()==BLACK || tabuleiro[lin][col].getChar()==QUEEN_BLACK)return false;
         }
-        else if(tabuleiro[lin][col].getChar()== VAZIO){return false;}
-        else if((tabuleiro[lin][col].getChar()==WHITE || tabuleiro[lin][col].getChar()==BLACK) && (abs(Tlin-lin)>1 || abs(Tcol-col)>1)){return false;}
-        else if((tabuleiro[lin][col].getChar()==QUEEN_WHITE || tabuleiro[lin][col].getChar()==QUEEN_BLACK)){
+        if(Player==B){
+            if(tabuleiro[lin][col].getChar()==WHITE || tabuleiro[lin][col].getChar()==QUEEN_WHITE)return false;
+        }
+        if((tabuleiro[lin][col].getChar()==WHITE || tabuleiro[lin][col].getChar()==BLACK) ){
+            if(abs(Tlin-lin)>1 || abs(Tcol-col)>1){return false;}
+            else if(tabuleiro[lin][col].getChar()==WHITE){
+                if(lin >= Tlin)return false;
+            }
+            else if(tabuleiro[lin][col].getChar()==BLACK){
+                if(Tlin >= lin)return false;
+            }
+        }
+        else if((tabuleiro[lin][col].getChar()==QUEEN_WHITE || tabuleiro[lin][col].getChar()==QUEEN_BLACK)){//acho q da pra tirar
             if(abs(Tlin-lin)!=abs(Tcol-col)){return false;}
             else{
                 for(int i=lin;Tlin>=i;i+=(Tlin-lin)/abs(Tlin-lin)){
                     for(int j=col;Tcol>=j;j+=(Tcol-col)/abs(Tcol-col)){
+                      // Caso de ter duas comidas
+                        //if(tabuleiro[i][j].getChar()!=tabuleiro[lin][col].getChar())return false;
                         if(tabuleiro[i][j].getChar()==tabuleiro[lin][col].getChar())return false;
                     }
                 }
-
             }
+        }
+        if(tabuleiro[Tlin][Tcol].getChar() != VAZIO){
+            if(Tlin > lin && Tcol > col && (Tlin == 7 || Tcol == 7)){return false;}
+            if(Tlin > lin && Tcol < col && (Tlin == 7 || Tcol == 0)){return false;}
+            if(Tlin < lin && Tcol > col && (Tlin == 0 || Tcol == 7)){return false;}
+            if(Tlin < lin && Tcol < col && (Tlin == 0 || Tcol == 0)){return false;}
         }
         return true;
     }
     bool Jogada(int lin, int col, int Tlin, int Tcol, Player Pl, Opponent Op)
     { 
         if(!isValid(lin,col,Tlin,Tcol,Pl)){cout<< "Jogada Invalida\n";return false;}
-        tabuleiro[lin][col]=Vazio();
         if (tabuleiro[lin][col].getChar() == QUEEN_WHITE || tabuleiro[lin][col].getChar() == QUEEN_BLACK)
         { // Dama
+            tabuleiro[lin][col]=Vazio();
             return false;
         }
         else
@@ -181,6 +197,7 @@ public:
                 return false;
             }
             else{
+                tabuleiro[lin][col]=Vazio();
                 tabuleiro[Tlin][Tcol]=Comum(Pl);
                 return true;
             }
@@ -239,7 +256,7 @@ int main()
     Player Pl=W;
     Opponent Op=frnd;
     int i=3;
-    bool jogadaValida;
+    bool jogadaValida=true;
     while(i != 1 && i!=2){
         cout << "Deseja Jogar contra:\n[1]Computador\n[2]Humano\n";
         cin>> i;
@@ -247,7 +264,7 @@ int main()
     if(i==1){Op=comp;}
     else{Op=frnd;}
     if(Op==comp && jogadaValida && Pl==B){
-           p. ComputerPlay(Pl);
+           p.ComputerPlay(Pl);
     }
     while(p.termino()){
         p.imprimir();
@@ -255,7 +272,7 @@ int main()
         cout << "Escreva a linha e a coluna no formato a1, que e o canto superior esquerdo\nDa peca escolhida:\n";
         cin >> info;
         if(info[0]-'a'>8 || info[1]-'1'>8 || info[0]-'a'<0 || info[1]-'1'<0){cout<<"Digite um valor valido\n";continue;}
-        cout << "Do destino:\n";
+        cout <<"Do destino:\n";
         cin >> Target;
         if(Target[0]-'a'>8 || Target[1]-'1'>8 || Target[0]-'a'<0 || Target[1]-'1'<0){cout<<"Digite um valor valido\n";continue;}
         jogadaValida=  p.Jogada(info[1]-'1',info[0]-'a',Target[1]-'1',Target[0]-'a',Pl,Op);
