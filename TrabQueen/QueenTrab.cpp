@@ -6,6 +6,12 @@
 #include <iostream>
 using namespace std;
 
+#define WHITE 'w'
+#define BLACK 'b'
+#define QUEEN_WHITE 'W'
+#define QUEEN_BLACK 'B'
+#define VAZIO ' '
+
 enum Type
 {
     Peao,
@@ -30,24 +36,24 @@ protected:
     char pec;
 
 public:
-    Peca() { pec = ' '; }
+    Peca() { pec = VAZIO; }
     Peca(Type P, Player T)
     {
         if (T == W && P == Peao)
         {
-            pec = 'w';
+            pec = WHITE;
         }
         if (T == B && P == Peao)
         {
-            pec = 'b';
+            pec = BLACK;
         }
         if (T == W && P == Q)
         {
-            pec = 'W';
+            pec = QUEEN_WHITE;
         }
         if (T == B && P == Q)
         {
-            pec = 'B';
+            pec = QUEEN_BLACK;
         }
     }
     char getChar() { return pec; }
@@ -134,13 +140,13 @@ public:
             return false;
         else if (tabuleiro[Tlin][Tcol].getPlayer() == Player)
             return false;
-        else if (tabuleiro[Tlin][Tcol].getChar() != ' ' && (lin == 7 || col == 7 || lin == 0 || col == 0))
+        else if (tabuleiro[Tlin][Tcol].getChar() != VAZIO && (lin == 7 || col == 7 || lin == 0 || col == 0))
         {
             return false;
         }
-        else if(tabuleiro[lin][col].getChar()==' '){return false;}
-        else if((tabuleiro[lin][col].getChar()=='w' || tabuleiro[lin][col].getChar()=='b') && (abs(Tlin-lin)>1 || abs(Tcol-col)>1)){return false;}
-        else if((tabuleiro[lin][col].getChar()=='W' || tabuleiro[lin][col].getChar()=='B')){
+        else if(tabuleiro[lin][col].getChar()== VAZIO){return false;}
+        else if((tabuleiro[lin][col].getChar()==WHITE || tabuleiro[lin][col].getChar()==BLACK) && (abs(Tlin-lin)>1 || abs(Tcol-col)>1)){return false;}
+        else if((tabuleiro[lin][col].getChar()==QUEEN_WHITE || tabuleiro[lin][col].getChar()==QUEEN_BLACK)){
             if(abs(Tlin-lin)!=abs(Tcol-col)){return false;}
             else{
                 for(int i=lin;Tlin>=i;i+=(Tlin-lin)/abs(Tlin-lin)){
@@ -151,27 +157,26 @@ public:
 
             }
         }
-        else
-            return true;
+        return true;
     }
     bool Jogada(int lin, int col, int Tlin, int Tcol, Player Pl, Opponent Op)
     { 
         if(!isValid(lin,col,Tlin,Tcol,Pl)){cout<< "Jogada Invalida\n";return false;}
         tabuleiro[lin][col]=Vazio();
-        if (tabuleiro[lin][col].getChar() == 'W' || tabuleiro[lin][col].getChar() == 'B')
+        if (tabuleiro[lin][col].getChar() == QUEEN_WHITE || tabuleiro[lin][col].getChar() == QUEEN_BLACK)
         { // Dama
             return false;
         }
         else
         {// Normal
-            if(tabuleiro[Tlin][Tcol].getChar() != ' '){//Capturar peca
-                if(Tlin > lin && Tcol > col && tabuleiro[Tlin+1][Tcol+1].getChar()==' '){tabuleiro[Tlin+1][Tcol+1]=Comum(Pl);
+            if(tabuleiro[Tlin][Tcol].getChar() != VAZIO){//Capturar peca
+                if(Tlin > lin && Tcol > col && tabuleiro[Tlin+1][Tcol+1].getChar()==VAZIO){tabuleiro[Tlin+1][Tcol+1]=Comum(Pl);
                 tabuleiro[Tlin][Tcol]=Vazio();return true;}
-                if(Tlin > lin && Tcol < col && tabuleiro[Tlin+1][Tcol-1].getChar()==' '){tabuleiro[Tlin+1][Tcol-1]=Comum(Pl);
+                if(Tlin > lin && Tcol < col && tabuleiro[Tlin+1][Tcol-1].getChar()==VAZIO){tabuleiro[Tlin+1][Tcol-1]=Comum(Pl);
                 tabuleiro[Tlin][Tcol]=Vazio();return true;}
-                if(Tlin < lin && Tcol > col && tabuleiro[Tlin-1][Tcol+1].getChar()==' '){tabuleiro[Tlin-1][Tcol+1]=Comum(Pl);
+                if(Tlin < lin && Tcol > col && tabuleiro[Tlin-1][Tcol+1].getChar()==VAZIO){tabuleiro[Tlin-1][Tcol+1]=Comum(Pl);
                 tabuleiro[Tlin][Tcol]=Vazio();return true;}
-                if(Tlin < lin && Tcol < col && tabuleiro[Tlin-1][Tcol-1].getChar()==' '){tabuleiro[Tlin-1][Tcol-1]=Comum(Pl);
+                if(Tlin < lin && Tcol < col && tabuleiro[Tlin-1][Tcol-1].getChar()==VAZIO){tabuleiro[Tlin-1][Tcol-1]=Comum(Pl);
                 tabuleiro[Tlin][Tcol]=Vazio();return true;}
                 return false;
             }
@@ -191,15 +196,15 @@ public:
         {
             for (int j = 0; 8 > j; j++)
             {
-                if (tabuleiro[i][j].getChar()=='B' || tabuleiro[i][j].getChar()=='b'){
+                if (tabuleiro[i][j].getChar()==QUEEN_BLACK || tabuleiro[i][j].getChar()==BLACK){
                     countB++;
-                    if(i==0 && tabuleiro[i][j].getChar()=='b'){
+                    if(i==0 && tabuleiro[i][j].getChar()==BLACK){
                         tabuleiro[i][j]= Queen(B);
                     }
                 }
-                if (tabuleiro[i][j].getChar()=='W' || tabuleiro[i][j].getChar()=='w'){
+                if (tabuleiro[i][j].getChar()==QUEEN_WHITE || tabuleiro[i][j].getChar()==WHITE){
                     countW++;
-                    if(i==7 && tabuleiro[i][j].getChar()=='w'){
+                    if(i==7 && tabuleiro[i][j].getChar()==WHITE){
                         tabuleiro[i][j]= Queen(W);
                     }
                 }
@@ -232,7 +237,6 @@ int main()
     Tabuleiro p;
     string info,Target;
     Player Pl=W;
-    Direction D;
     Opponent Op=frnd;
     int i=3;
     bool jogadaValida;
@@ -255,7 +259,7 @@ int main()
         cin >> Target;
         if(Target[0]-'a'>8 || Target[1]-'1'>8 || Target[0]-'a'<0 || Target[1]-'1'<0){cout<<"Digite um valor valido\n";continue;}
         jogadaValida=  p.Jogada(info[1]-'1',info[0]-'a',Target[1]-'1',Target[0]-'a',Pl,Op);
-        if(!jogadaValida){cout<<"Jogada invalida"; continue;}
+        if(!jogadaValida){continue;}
         if(Op==frnd  ){
             if(Pl==W){Pl=B;}
             else Pl=W;
