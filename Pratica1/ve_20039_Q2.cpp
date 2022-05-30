@@ -3,7 +3,7 @@
 
 using namespace std;
 
-#define SENT -2147483647; //usei o menor inteiro pra poder setar como null , mas podia ser NULL também com uma alteracao no metodo de imprimir, usei por conta de um warn.
+#define SENT -2147483647; // usei o menor inteiro pra poder setar como null , mas podia ser NULL também com uma alteracao no metodo de imprimir, usei por conta de um warn.
 
 class Buffer
 {
@@ -49,7 +49,7 @@ public:
             cout << "Buffer cheio\n";
             return true;
         }
-        else if ((inicio-1) == (atual))
+        else if ((inicio - 1) == (atual))
         {
             cout << "Buffer cheio\n";
             return true;
@@ -90,36 +90,49 @@ public:
     }
     void remover()
     {
-        if (inicio == (max-1))
+        if (!isVazio())
         {
-            buffer[inicio] = SENT;
-            inicio=0;
-        }
-        else
-        {
-            buffer[inicio] = SENT;
-            inicio++;
+            if (inicio == (max - 1))
+            {
+                buffer[inicio] = SENT;
+                inicio = 0;
+            }
+            else
+            {
+                buffer[inicio] = SENT;
+                inicio++;
+            }
         }
     }
-    void imprimir(){
+    void imprimir()
+    {
         bool isPrinted[max]{};
-        for(int i=inicio; max>i;i++ ){
-            if(isPrinted[i]){break;}
-            isPrinted[i]=true;
-            if(buffer[i]!=-2147483647)//se usar null basta colocar if(buffer[i])
-                cout <<buffer[i]<<" ";
+        for (int i = inicio; max > i; i++)
+        {
+            if (isPrinted[i])
+            {
+                break;
+            }
+            isPrinted[i] = true;
+            if (buffer[i] != -2147483647) // se usar null basta colocar if(buffer[i])
+                cout << buffer[i] << " ";
         }
-        for(int i=0; atual>i;i++ ){
-            if(isPrinted[i]){break;}
-            isPrinted[i]=true;
-            if(buffer[i]!=-2147483647)//se usar null basta colocar if(buffer[i])
-                cout <<buffer[i]<<" ";
+        for (int i = 0; atual > i; i++)
+        {
+            if (isPrinted[i])
+            {
+                break;
+            }
+            isPrinted[i] = true;
+            if (buffer[i] != -2147483647) // se usar null basta colocar if(buffer[i])
+                cout << buffer[i] << " ";
         }
-        cout <<"\n";
+        cout << "\n";
     }
 };
 
-int main(){
+int main()
+{
     Buffer bf;
     bf.isVazio();
     bf.inserir(0);

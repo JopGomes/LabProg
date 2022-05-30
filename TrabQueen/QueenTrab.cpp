@@ -1,6 +1,5 @@
 // falta dama
-// falta resolver o isValid ( OLHAR SE O LUGAR QUE TA PEGANDO TEM A PEÇA Q EU QUERO)
-// falta algumas outras coisas
+// falta IA decente
 
 #include <stdio.h>
 #include <iostream>
@@ -100,7 +99,7 @@ public:
         {
             for (int j = 0; j < 8; j++)
             {
-                if (i < 3 && (i % 2 != j % 2))
+                if (i < 3 && (i % 2 == j % 2))
                 {
                     tabuleiro[i][j] = Comum(W);
                 }
@@ -133,158 +132,50 @@ public:
         }
         cout << "\n";
     }
-    bool isValid(int lin, int col, Player Player)
+    bool isValid(int lin, int col,int Tlin, int Tcol, Player Player)
     {
-        if (lin >= 8 || col >= 8 || lin < 0 || col < 0)
+        if (lin >= 8 || col >= 8 || lin < 0 || col < 0 || Tlin >= 8 || Tcol >= 8 || Tlin < 0 || Tcol < 0)
             return false;
-        else if (tabuleiro[lin][col].getPlayer() == Player)
+        else if (tabuleiro[Tlin][Tcol].getPlayer() == Player)
             return false;
-        else if (tabuleiro[lin][col].getChar() != ' ' && (lin == 7 || col == 7 || lin == 0 || col == 0))
+        else if (tabuleiro[Tlin][Tcol].getChar() != ' ' && (lin == 7 || col == 7 || lin == 0 || col == 0))
         {
             return false;
+        }
+        else if(tabuleiro[lin][col].getChar()==' '){return false;}
+        else if((tabuleiro[lin][col].getChar()=='w' || tabuleiro[lin][col].getChar()=='b') && (abs(Tlin-lin)>1 || abs(Tcol-col)>1)){return false;}
+        else if((tabuleiro[lin][col].getChar()=='W' || tabuleiro[lin][col].getChar()=='B')){
+            return true; // implementar a validação da dama
         }
         else
             return true;
     }
-    void Jogada(int lin, int col, Direction T, Player Pl, Opponent Op)
-    {
+    bool Jogada(int lin, int col, int Tlin, int Tcol, Player Pl, Opponent Op)
+    { 
+        if(!isValid(lin,col,Tlin,Tcol,Pl)){cout<< "Jogada Invalida\n";return false;}
+        tabuleiro[lin][col]=Vazio();
         if (tabuleiro[lin][col].getChar() == 'W' || tabuleiro[lin][col].getChar() == 'B')
         { // Dama
+            return false;
         }
         else
-        {
-            if (T == lf)
-            { // para a esquerda
-                if (Pl == W)
-                { // se for as brancas
-                    if (isValid(lin + 1, col - 1, Pl))
-                    { // Talvez de pra criar uma função e deixar menos repetitivo
-                        tabuleiro[lin][col] = Vazio();
-                        if (lin == 6)
-                        {
-                            tabuleiro[lin + 1][col - 1] = Queen(W);
-                        }
-                        else if (tabuleiro[lin + 1][col - 1].getChar() != ' ')
-                        {
-                            tabuleiro[lin + 1][col - 1] = Vazio();
-                            if (lin == 5)
-                            {
-                                tabuleiro[lin + 2][col - 2] = Queen(W);
-                            }
-                            else
-                            {
-                                tabuleiro[lin + 2][col - 2] = Comum(W);
-                            }
-                        }
-                        else
-                        {
-                            tabuleiro[lin + 1][col - 1] = Comum(W);
-                        }
-                    }
-                    else
-                    {
-                        cout << "Jogada Invalida";
-                    }
-                }
-                else
-                { // se for as negras
-                    if (isValid(lin - 1, col - 1, Pl))
-                    { // Talvez de pra criar uma função e deixar menos repetitivo
-                        tabuleiro[lin][col] = Vazio();
-                        if (lin == 1)
-                        {
-                            tabuleiro[lin - 1][col - 1] = Queen(B);
-                        }
-                        else if (tabuleiro[lin - 1][col - 1].getChar() != ' ')
-                        {
-                            tabuleiro[lin - 1][col - 1] = Vazio();
-                            if (lin == 2)
-                            {
-                                tabuleiro[lin - 2][col - 2] = Queen(B);
-                            }
-                            else
-                            {
-                                tabuleiro[lin - 2][col - 2] = Comum(B);
-                            }
-                        }
-                        else
-                        {
-                            tabuleiro[lin - 1][col - 1] = Comum(B);
-                        }
-                    }
-                    else
-                    {
-                        cout << "Jogada Invalida";
-                    }
-                }
+        {// Normal
+            if(tabuleiro[Tlin][Tcol].getChar() != ' '){//Capturar peca
+                tabuleiro[Tlin][Tcol]=Vazio();
+                if(Tlin > lin && Tcol > col){tabuleiro[Tlin+1][Tcol+1]=Comum(Pl);return true;}
+                if(Tlin > lin && Tcol < col){tabuleiro[Tlin+1][Tcol-1]=Comum(Pl);return true;}
+                if(Tlin < lin && Tcol > col){tabuleiro[Tlin-1][Tcol+1]=Comum(Pl);return true;}
+                if(Tlin < lin && Tcol < col){tabuleiro[Tlin-1][Tcol-1]=Comum(Pl);return true;}
+                return false;
             }
-            else
-            { // para a direita
-                if (Pl == W)
-                { // se for as brancas
-                    if (isValid(lin + 1, col + 1, Pl))
-                    {
-                       tabuleiro[lin][col] = Vazio();
-                        if (lin == 6)
-                        {
-                            tabuleiro[lin + 1][col + 1] = Queen(W);
-                        }
-                        else if (tabuleiro[lin + 1][col - 1].getChar() != ' ')
-                        {
-                            tabuleiro[lin + 1][col  + 1] = Vazio();
-                            if (lin == 5)
-                            {
-                                tabuleiro[lin + 2][col + 2] = Queen(W);
-                            }
-                            else
-                            {
-                                tabuleiro[lin + 2][col + 2] = Comum(W);
-                            }
-                        }
-                        else
-                        {
-                            tabuleiro[lin + 1][col + 1] = Comum(W);
-                        }
-                    }
-                    else
-                    {
-                        cout << "Jogada Invalida";
-                    }
-                }
-                else
-                { // se for as negras para direita
-                    if (isValid(lin - 1, col + 1, Pl))
-                    { // Talvez de pra criar uma função e deixar menos repetitivo
-                        tabuleiro[lin][col] = Vazio();
-                        if (lin == 1)
-                        {
-                            tabuleiro[lin - 1][col + 1] = Queen(B);
-                        }
-                        else if (tabuleiro[lin - 1][col + 1].getChar() != ' ')
-                        {
-                            tabuleiro[lin - 1][col + 1] = Vazio();
-                            if (lin == 2)
-                            {
-                                tabuleiro[lin - 2][col + 2] = Queen(B);
-                            }
-                            else
-                            {
-                                tabuleiro[lin - 2][col + 2] = Comum(B);
-                            }
-                        }
-                        else
-                        {
-                            tabuleiro[lin - 1][col + 1] = Comum(B);
-                        }
-                    }
-                    else
-                    {
-                        cout << "Jogada Invalida";
-                    }
-                }
+            else{
+                tabuleiro[Tlin][Tcol]=Comum(Pl);
+                return true;
             }
         }
-    }
+    } 
+    void ComputerPlay(Player Pl){//falta implementar o computador jogar
+        return;}
     bool termino()
     {
         int countB = 0;
@@ -293,20 +184,28 @@ public:
         {
             for (int j = 0; 8 > j; j++)
             {
-                if (tabuleiro[i][j].getChar()=='B' || tabuleiro[i][j].getChar()=='b')
+                if (tabuleiro[i][j].getChar()=='B' || tabuleiro[i][j].getChar()=='b'){
                     countB++;
-                if (tabuleiro[i][j].getChar()=='W' || tabuleiro[i][j].getChar()=='w')
+                    if(i==0 && tabuleiro[i][j].getChar()=='b'){
+                        tabuleiro[i][j]= Queen(B);
+                    }
+                }
+                if (tabuleiro[i][j].getChar()=='W' || tabuleiro[i][j].getChar()=='w'){
                     countW++;
+                    if(i==7 && tabuleiro[i][j].getChar()=='w'){
+                        tabuleiro[i][j]= Queen(W);
+                    }
+                }
             }
         }
         if (countB == 0)
         {
-            cout << "White";
+            cout << "White WIN";
             return false;
         }
         if (countW == 0)
         {
-            cout << "Black";
+            cout << "Black WIN";
             return false;
         }
         return true;
@@ -324,23 +223,30 @@ public:
 int main()
 {
     Tabuleiro p;
-    string info;
+    string info,Target;
     Player Pl=W;
     Direction D;
     Opponent Op=frnd;
-    int i;
+    bool jogadaValida;
+    if(Op==comp && jogadaValida && Pl==B){
+           p. ComputerPlay(Pl);
+    }
     while(p.termino()){
         p.imprimir();
         cout << "\n";
-        cout << "Escreva a linha e a coluna no formato a1 da peca:\n";
+        cout << "Escreva a linha e a coluna no formato a1, que e o canto superior esquerdo\nDa peca escolhida:\n";
         cin >> info;
-        cout << "Para qual lado \n[1] Esquerda \n[2]Direita\n";
-        cin >> i;
-        if(i==1)D=lf;
-        else if(i==2)D=rt;
-        else{continue;}
-        p.Jogada(info[0]-'a',info[1]-'0',D,Pl,Op);
-        if(Pl==W){Pl=B;}
-        else Pl=W;
+        if(info[0]-'a'>8 || info[1]-'1'>8 || info[0]-'a'<0 || info[1]-'1'<0){cout<<"Digite um valor valido\n";continue;}
+        cout << "Do destino:\n";
+        cin >> Target;
+        if(Target[0]-'a'>8 || Target[1]-'1'>8 || Target[0]-'a'<0 || Target[1]-'1'<0){cout<<"Digite um valor valido\n";continue;}
+        jogadaValida=  p.Jogada(info[1]-'1',info[0]-'a',Target[1]-'1',Target[0]-'a',Pl,Op);
+        if(Op==frnd &&jogadaValida ){
+            if(Pl==W){Pl=B;}
+            else Pl=W;
+        }
+        if(Op==comp && jogadaValida){
+            p.ComputerPlay(Pl);
+        }
     }
 }
