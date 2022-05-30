@@ -1,5 +1,6 @@
 // falta dama
 // falta IA decente
+// falta SFML
 
 #include <stdio.h>
 #include <iostream>
@@ -15,11 +16,6 @@ enum Player
     W,
     B,
     V
-};
-enum Direction
-{
-    lf,
-    rt,
 };
 
 enum Opponent
@@ -145,7 +141,15 @@ public:
         else if(tabuleiro[lin][col].getChar()==' '){return false;}
         else if((tabuleiro[lin][col].getChar()=='w' || tabuleiro[lin][col].getChar()=='b') && (abs(Tlin-lin)>1 || abs(Tcol-col)>1)){return false;}
         else if((tabuleiro[lin][col].getChar()=='W' || tabuleiro[lin][col].getChar()=='B')){
-            return true; // implementar a validação da dama
+            if(abs(Tlin-lin)!=abs(Tcol-col)){return false;}
+            else{
+                for(int i=lin;Tlin>=i;i+=(Tlin-lin)/abs(Tlin-lin)){
+                    for(int j=col;Tcol>=j;j+=(Tcol-col)/abs(Tcol-col)){
+                        if(tabuleiro[i][j].getChar()==tabuleiro[lin][col].getChar())return false;
+                    }
+                }
+
+            }
         }
         else
             return true;
@@ -161,11 +165,14 @@ public:
         else
         {// Normal
             if(tabuleiro[Tlin][Tcol].getChar() != ' '){//Capturar peca
-                tabuleiro[Tlin][Tcol]=Vazio();
-                if(Tlin > lin && Tcol > col){tabuleiro[Tlin+1][Tcol+1]=Comum(Pl);return true;}
-                if(Tlin > lin && Tcol < col){tabuleiro[Tlin+1][Tcol-1]=Comum(Pl);return true;}
-                if(Tlin < lin && Tcol > col){tabuleiro[Tlin-1][Tcol+1]=Comum(Pl);return true;}
-                if(Tlin < lin && Tcol < col){tabuleiro[Tlin-1][Tcol-1]=Comum(Pl);return true;}
+                if(Tlin > lin && Tcol > col && tabuleiro[Tlin+1][Tcol+1].getChar()==' '){tabuleiro[Tlin+1][Tcol+1]=Comum(Pl);
+                tabuleiro[Tlin][Tcol]=Vazio();return true;}
+                if(Tlin > lin && Tcol < col && tabuleiro[Tlin+1][Tcol-1].getChar()==' '){tabuleiro[Tlin+1][Tcol-1]=Comum(Pl);
+                tabuleiro[Tlin][Tcol]=Vazio();return true;}
+                if(Tlin < lin && Tcol > col && tabuleiro[Tlin-1][Tcol+1].getChar()==' '){tabuleiro[Tlin-1][Tcol+1]=Comum(Pl);
+                tabuleiro[Tlin][Tcol]=Vazio();return true;}
+                if(Tlin < lin && Tcol < col && tabuleiro[Tlin-1][Tcol-1].getChar()==' '){tabuleiro[Tlin-1][Tcol-1]=Comum(Pl);
+                tabuleiro[Tlin][Tcol]=Vazio();return true;}
                 return false;
             }
             else{
@@ -227,7 +234,14 @@ int main()
     Player Pl=W;
     Direction D;
     Opponent Op=frnd;
+    int i=3;
     bool jogadaValida;
+    while(i != 1 && i!=2){
+        cout << "Deseja Jogar contra:\n[1]Computador\n[2]Humano\n";
+        cin>> i;
+    }
+    if(i==1){Op=comp;}
+    else{Op=frnd;}
     if(Op==comp && jogadaValida && Pl==B){
            p. ComputerPlay(Pl);
     }
@@ -241,11 +255,12 @@ int main()
         cin >> Target;
         if(Target[0]-'a'>8 || Target[1]-'1'>8 || Target[0]-'a'<0 || Target[1]-'1'<0){cout<<"Digite um valor valido\n";continue;}
         jogadaValida=  p.Jogada(info[1]-'1',info[0]-'a',Target[1]-'1',Target[0]-'a',Pl,Op);
-        if(Op==frnd &&jogadaValida ){
+        if(!jogadaValida){cout<<"Jogada invalida"; continue;}
+        if(Op==frnd  ){
             if(Pl==W){Pl=B;}
             else Pl=W;
         }
-        if(Op==comp && jogadaValida){
+        if(Op==comp ){
             p.ComputerPlay(Pl);
         }
     }
