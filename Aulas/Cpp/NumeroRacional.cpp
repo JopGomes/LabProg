@@ -54,7 +54,21 @@ class NumeroRacional{
         double c= (up+0.0)/dw +0.0;
         return c;
     }
+    friend istream& operator >> (istream &is, NumeroRacional &rn);
+    friend ostream& operator<<(ostream &os,const NumeroRacional &rn);
+
 };
+
+
+istream& operator >> (istream &is, NumeroRacional &rn){
+    char c;
+    is>> rn.up >> c>> rn.dw;
+    return is;
+}
+ostream& operator<<(ostream &os,const NumeroRacional &rn){
+    os<< rn.up <<"/" << rn.dw;
+    return os;
+}
 
 int main(){
     NumeroRacional a(2,4),b(1,-2);
@@ -62,5 +76,6 @@ int main(){
     b.frac();
     (a+b).frac();
     (a-b).frac();
+    cout<< "teste\n";
     cout << (float) a<< "\n" << a;
 }
