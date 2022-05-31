@@ -157,11 +157,14 @@ public:
         }
         else if((tabuleiro[lin][col].getChar()==QUEEN_WHITE || tabuleiro[lin][col].getChar()==QUEEN_BLACK)){//acho q da pra tirar
             if(abs(Tlin-lin)!=abs(Tcol-col)){return false;}
-            else{
-                for(int i=lin;Tlin>=i;i+=(Tlin-lin)/abs(Tlin-lin)){
-                    for(int j=col;Tcol>=j;j+=(Tcol-col)/abs(Tcol-col)){
+            else{//CONDIÇÕES DA DAMA PRECISA REFAZER os FOR
+                int addLin =(Tlin-lin)/abs(Tlin-lin);
+                int addCol=(Tcol-col)/abs(Tcol-col);
+                for(int i=min(lin,Tlin);max(Tlin,lin)>=i && i>=0;i+=addLin){
+                    for(int j=min(col,Tcol);max(Tcol,col)>=j && i>=0;j+=addCol){
                       // Caso de ter duas comidas
-                        //if(tabuleiro[i][j].getChar()!=tabuleiro[lin][col].getChar())return false;
+                        if(tabuleiro[i][j].getChar()!=VAZIO && tabuleiro[i+addLin][j+addCol].getChar() != VAZIO)return false;
+                        //Caso ter peca branca no meio
                         if(tabuleiro[i][j].getChar()==tabuleiro[lin][col].getChar())return false;
                     }
                 }
@@ -179,12 +182,21 @@ public:
     { 
         if(!isValid(lin,col,Tlin,Tcol,Pl)){cout<< "Jogada Invalida\n";return false;}
         if (tabuleiro[lin][col].getChar() == QUEEN_WHITE || tabuleiro[lin][col].getChar() == QUEEN_BLACK)
-        { // Dama
+        { // Dama precisa refazer os FOR
+            int addLin =(Tlin-lin)/abs(Tlin-lin);
+            int addCol=(Tcol-col)/abs(Tcol-col);
             tabuleiro[lin][col]=Vazio();
-            return false;
+            for(int i=min(lin,Tlin);max(Tlin,lin)>=i && i>=0;i+=addLin){
+                    for(int j=min(col,Tcol);max(Tcol,col)>=j && j>=0;j+=addCol){
+                      tabuleiro[i][j]=Vazio();
+                    }
+            }
+            tabuleiro[Tlin][Tcol]=Queen(Pl);
+            return true;
         }
         else
         {// Normal
+            tabuleiro[lin][col]=Vazio();
             if(tabuleiro[Tlin][Tcol].getChar() != VAZIO){//Capturar peca
                 if(Tlin > lin && Tcol > col && tabuleiro[Tlin+1][Tcol+1].getChar()==VAZIO){tabuleiro[Tlin+1][Tcol+1]=Comum(Pl);
                 tabuleiro[Tlin][Tcol]=Vazio();return true;}
@@ -194,10 +206,9 @@ public:
                 tabuleiro[Tlin][Tcol]=Vazio();return true;}
                 if(Tlin < lin && Tcol < col && tabuleiro[Tlin-1][Tcol-1].getChar()==VAZIO){tabuleiro[Tlin-1][Tcol-1]=Comum(Pl);
                 tabuleiro[Tlin][Tcol]=Vazio();return true;}
-                return false;
+                return true;
             }
             else{
-                tabuleiro[lin][col]=Vazio();
                 tabuleiro[Tlin][Tcol]=Comum(Pl);
                 return true;
             }
