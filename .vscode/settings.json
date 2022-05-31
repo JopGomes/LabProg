@@ -15,7 +15,9 @@
         "numbers": "cpp",
         "algorithm": "cpp",
         "new": "cpp",
-        "ostream": "cpp"
+        "ostream": "cpp",
+        "iosfwd": "cpp",
+        "iomanip": "cpp"
     },
     "C_Cpp.errorSquiggles": "Disabled"
 }
