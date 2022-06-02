@@ -339,7 +339,6 @@ public:
             int auxLin=lin;
             int auxCol=col;
             while(lin != Tlin || col != Tcol){
-                tabuleiro[lin][col]=Queen(Pl);
                 if(!isValid(lin, col, lin+addLin , col+ addCol,Pl)){
                     if(tabuleiro[lin+addLin][col+addCol].getPlayer() != Pl){//se tiver peca no meio do caminho
                         if(lin+addLin == Tlin ) {cout << "Jogada Invalida\n";return false;}// se for pra fora do range
@@ -349,17 +348,13 @@ public:
                             tabuleiro[lin+2*addLin][col+2*addCol]=Queen(Pl);
                             return true;
                         }
-                        else{
-                            tabuleiro[lin][col]=Vazio();
-                            cout << "Jogada Invalida\n";return false;}
+                        else{cout << "Jogada Invalida\n";return false;}
                     }
                     else {
-                        tabuleiro[lin][col]=Vazio();
                         cout<< "Jogada invalida"<<endl;
                         return false;
                     }
                 }
-                tabuleiro[lin][col]=Vazio();
                 lin += addLin;
                 col += addCol;
             }
