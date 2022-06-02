@@ -41,6 +41,7 @@ protected:
     static int qntWhite;
     static int qntBlack;
     Player Pl;
+    Type Ty;
 
 public:
     Peca()
@@ -68,6 +69,7 @@ public:
         }
 
         Pl = T;
+        Ty=P;
 
         if (T == B)
             qntBlack++;
@@ -83,8 +85,8 @@ public:
         pec = p.pec;
         Pl =p.Pl;
     }
-
     char getChar() { return pec; }
+    Type getType(){return Ty;}
     Player getPlayer(){return Pl;}
     static void setQnt(Player Play) {
         if (Play == B)
