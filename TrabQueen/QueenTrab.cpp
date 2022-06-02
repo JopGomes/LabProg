@@ -89,6 +89,13 @@ public:
     Player getPlayer(){return Pl;}
     static int getQntWhite() { return qntWhite; }
     static int getQntBlack() { return qntBlack; }
+    // ~Peca()
+    // {
+    //     if (Pl == W)
+    //         qntWhite--;
+    //     else if(Pl == B)
+    //         qntBlack--;
+    // }
 };
 
 int Peca::qntBlack = 0;
@@ -316,7 +323,7 @@ public:
     }
     
     bool Jogada(int lin, int col, int Tlin, int Tcol, Player Pl, Opponent Op)
-    {   cout << "enttrou"<<endl;
+    {   
         if (!isValid(lin, col, Tlin, Tcol, Pl))
         {
             cout << "Jogada Invalida\n";
@@ -326,15 +333,22 @@ public:
 
 
         if (tabuleiro[lin][col].getChar() == QUEEN_WHITE || tabuleiro[lin][col].getChar() == QUEEN_BLACK)
-        { // Dama precisa refazer os FOR
-            int addLin = (Tlin - lin) / abs(Tlin - lin);
+        { // Dama 
+            int addLin = (Tlin - lin) / abs(Tlin - lin);//direcões
             int addCol = (Tcol - col) / abs(Tcol - col);
-
+            int auxLin=lin;
+            int auxCol=col;
             while(lin != Tlin || col != Tcol){
                 if(!isValid(lin, col, lin+addLin , col+ addCol,Pl)){
-                    if(tabuleiro[lin+addLin][col+addCol].getPlayer() != Pl){
-                        if(lin+2*addLin != Tlin )
-                        if(isValid(lin, col, lin+2*addLin , col+ 2*addCol,Pl))
+                    if(tabuleiro[lin+addLin][col+addCol].getPlayer() != Pl){//se tiver peca no meio do caminho
+                        if(lin+addLin == Tlin ) {cout << "Jogada Invalida\n";return false;}// se for pra fora do range
+                        if(isValid(lin, col, lin+2*addLin , col+ 2*addCol,Pl)){
+                            tabuleiro[auxLin][auxCol]=Vazio();
+                            tabuleiro[lin+addLin][col+addCol]=Vazio();
+                            tabuleiro[lin+2*addLin][col+2*addCol]=Queen(Pl);
+                            return true;
+                        }
+                        else{cout << "Jogada Invalida\n";return false;}
                     }
                     else {
                         cout<< "Jogada invalida"<<endl;
@@ -344,7 +358,8 @@ public:
                 lin += addLin;
                 col += addCol;
             }
-            
+            tabuleiro[auxLin][auxCol]=Vazio();//se n tiver nada no range
+            tabuleiro[Tlin][Tcol]=Queen(Pl);
             return true;
         }
         else
@@ -354,7 +369,7 @@ public:
             { // Capturar peca
                 tabuleiro[lin][col] = Vazio();
                 if (Pl == W)
-                {
+                {// Brancas
                     if (Tcol > col)
                         col += 1;
                     else
@@ -370,7 +385,7 @@ public:
                     return true;
                 }
                 else
-                {
+                {// Negras
                     if (Tcol > col)
                         col += 1;
                     else
