@@ -383,7 +383,7 @@ public:
             {
                 if (tabuleiro[i][j].getPlayer()==Comp){
                     if(tabuleiro[i][j].getType()==Peao){//Peao
-                        if(tabuleiro[i+addLin][j+addLin].getPlayer!=V){//Capturar
+                        if(tabuleiro[i+addLin][j+addLin].getPlayer!=V){//Capturar peca
                             if(isValid(i,j,i+addLin,j+addLin,Comp)){
                                 return false;
                             }
