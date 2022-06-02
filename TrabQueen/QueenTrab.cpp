@@ -329,15 +329,22 @@ public:
         { // Dama precisa refazer os FOR
             int addLin = (Tlin - lin) / abs(Tlin - lin);
             int addCol = (Tcol - col) / abs(Tcol - col);
-            tabuleiro[lin][col] = Vazio();
-            for (int i = min(lin, Tlin); max(Tlin, lin) >= i && i >= 0; i += addLin)
-            {
-                for (int j = min(col, Tcol); max(Tcol, col) >= j && j >= 0; j += addCol)
-                {
-                    tabuleiro[i][j] = Vazio();
+
+            while(lin != Tlin || col != Tcol){
+                if(!isValid(lin, col, lin+addLin , col+ addCol,Pl)){
+                    if(tabuleiro[lin+addLin][col+addCol].getPlayer() != Pl){
+                        if(lin+2*addLin != Tlin )
+                        if(isValid(lin, col, lin+2*addLin , col+ 2*addCol,Pl))
+                    }
+                    else {
+                        cout<< "Jogada invalida"<<endl;
+                        return false;
+                    }
                 }
+                lin += addLin;
+                col += addCol;
             }
-            tabuleiro[Tlin][Tcol] = Queen(Pl);
+            
             return true;
         }
         else
