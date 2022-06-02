@@ -169,13 +169,13 @@ public:
         {
             for (int j = 0; j < 8; j++)
             {
-                if (i < 3 && (i % 2 == j % 2))
+                if (i < 3 && (i % 2 == j % 2)&& (i == 0))
                 {
                     tabuleiro[i][j] = Comum(W);
                 }
-                else if (i >= 5 && (i % 2 == j % 2))
+                else if (i >= 5 && (i % 2 == j % 2)&& i == 7)
                 {
-                    tabuleiro[i][j] = Comum(B);
+                    tabuleiro[i][j] = Queen(B);
                 }
                 else
                 {
@@ -183,6 +183,7 @@ public:
                 }
             }
         }
+        
     }
     void imprimir()
     {
@@ -338,7 +339,32 @@ public:
             int addCol = (Tcol - col) / abs(Tcol - col);
             int auxLin=lin;
             int auxCol=col;
+            int bloqueio = 0;
+
             while(lin != Tlin || col != Tcol){
+                lin += addLin;
+                col += addCol;
+                if(tabuleiro[lin][col].getPlayer() != V) bloqueio += 1;
+                    
+            }    
+            if(bloqueio > 1) {
+                cout<<"jogada invalida"<<endl;
+                return false;
+            }
+            else{
+                if(bloqueio == 1){
+                    if(tabuleiro[Tlin][Tcol].getPlayer() != V || !(((tabuleiro[Tlin-addLin][Tcol-addCol].getPlayer() != Pl ))&&((tabuleiro[Tlin-addLin][Tcol-addCol].getPlayer() != V )))){
+                        cout<<"jogada invalida"<<endl;
+                        return false;
+                    }
+                }
+            }
+                tabuleiro[auxLin][auxCol] = Vazio();
+                tabuleiro[Tlin-addLin][Tcol-addCol] = Vazio();
+                tabuleiro[Tlin][Tcol] = Queen(Pl);
+
+                return true;
+                /*
                 if(!isValid(lin, col, lin+addLin , col+ addCol,Pl)){
                     if(tabuleiro[lin+addLin][col+addCol].getPlayer() != Pl){//se tiver peca no meio do caminho
                         if(lin+addLin == Tlin ) {cout << "Jogada Invalida\n";return false;}// se for pra fora do range
@@ -355,12 +381,12 @@ public:
                         return false;
                     }
                 }
-                lin += addLin;
-                col += addCol;
+                
             }
             tabuleiro[auxLin][auxCol]=Vazio();//se n tiver nada no range
             tabuleiro[Tlin][Tcol]=Queen(Pl);
-            return true;
+            return true;*/
+            
         }
         else
         { // Normal
@@ -401,8 +427,9 @@ public:
                 }
             }
             else
-            {
-                tabuleiro[Tlin][Tcol] = Comum(Pl);
+            {   
+                if(Tlin == 0 || Tlin == 7) tabuleiro[Tlin][Tcol] = Queen(Pl);
+                else tabuleiro[Tlin][Tcol] = Comum(Pl);
                 return true;
             }
         }
