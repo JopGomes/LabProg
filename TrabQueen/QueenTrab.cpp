@@ -375,14 +375,24 @@ public:
         Player Comp;
         if(Pl==W){Comp=B;}
         else Comp=W;
-        // if(Comp==W){addLin=1;}
-        // else addLin=-1;
+        if(Comp==W){addLin=1;}
+        else addLin=-1;
         for (int i = 0; 8 > i; i++)
         {
             for (int j = 0; 8 > j; j++)
             {
                 if (tabuleiro[i][j].getPlayer()==Comp){
+                    if(tabuleiro[i][j].getType()==Peao){//Peao
+                        if(tabuleiro[i+addLin][j+addLin].getPlayer!=V){//Capturar
+                            if(isValid(i,j,i+addLin,j+addLin,Comp)){
+                                return false;
+                            }
+                        }
+                        if()
+                    }
+                    else{//Dama}
                     
+                    }
                 }
             }
         }
