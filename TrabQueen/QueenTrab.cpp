@@ -127,13 +127,6 @@ public:
         pec = p.pec;
         Pl =p.Pl;
     }
-    ~Comum()
-    {
-        if (Pl == W)
-            qntWhite--;
-        else
-            qntBlack--;
-    }
 };
 
 class Queen : public Peca
@@ -155,13 +148,6 @@ public:
             qntWhite++;
         pec = p.pec;
         Pl =p.Pl;
-    }
-    ~Queen()
-    {
-        if (Pl == W)
-            qntWhite--;
-        else
-            qntBlack--;
     }
 };
 
@@ -223,6 +209,7 @@ public:
     }
     bool isValid(int lin, int col, int Tlin, int Tcol, Player Player)
     {    
+        if (lin >= 8 || col >= 8 || lin < 0 || col < 0 || Tlin >= 8 || Tcol >= 8 || Tlin < 0 || Tcol < 0) return false;
 
         if(Player != tabuleiro[lin][col].getPlayer()) return false; //posicao inicial invalida
 
