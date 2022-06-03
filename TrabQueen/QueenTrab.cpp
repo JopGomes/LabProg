@@ -223,7 +223,6 @@ public:
     }
     bool isValid(int lin, int col, int Tlin, int Tcol, Player Player)
     {    
-        if (lin >= 8 || col >= 8 || lin < 0 || col < 0 || Tlin >= 8 || Tcol >= 8 || Tlin < 0 || Tcol < 0) return false;
 
         if(Player != tabuleiro[lin][col].getPlayer()) return false; //posicao inicial invalida
 
@@ -288,38 +287,16 @@ public:
 
 
         if (tabuleiro[lin][col].getChar() == QUEEN_WHITE || tabuleiro[lin][col].getChar() == QUEEN_BLACK)
-        { // Dama 
-            int addLin = (Tlin - lin) / abs(Tlin - lin);//direcões
-            int addCol = (Tcol - col) / abs(Tcol - col);
-            int auxLin=lin;
-            int auxCol=col;
-            int bloqueio = 0;
-
-            while(lin != Tlin || col != Tcol){
-                lin += addLin;
-                col += addCol;
-                if(tabuleiro[lin][col].getPlayer() != V) bloqueio += 1;
-                    
-            }    
-            if(bloqueio > 1) {
-                cout<<"jogada invalida"<<endl;
-                return false;
-            }
-            else{
-                if(bloqueio == 1){
-                    if(tabuleiro[Tlin][Tcol].getPlayer() != V || !(((tabuleiro[Tlin-addLin][Tcol-addCol].getPlayer() != Pl ))&&((tabuleiro[Tlin-addLin][Tcol-addCol].getPlayer() != V )))){
-                        cout<<"jogada invalida"<<endl;
-                        return false;
-                    }
-                }
-            }
+        { // Dama
+                int addLin = (Tlin - lin) / abs(Tlin - lin);//direcões
+                int addCol = (Tcol - col) / abs(Tcol - col);
+                int auxLin=lin , auxCol=col;
                 setVazio(auxLin,auxCol);
                 setVazio(Tlin-addLin,Tcol-addCol);
                 // tabuleiro[auxLin][auxCol] = Vazio();
                 // tabuleiro[Tlin-addLin][Tcol-addCol] = Vazio();
                 tabuleiro[Tlin][Tcol] = Queen(Pl);
-            return true;
-            
+            return true;    
         }
         else
         { // Normal
@@ -327,7 +304,6 @@ public:
             // tabuleiro[lin][col] = Vazio();
             if (abs(Tlin-lin) == 2 && abs(Tcol - col) == 2)
             { // Capturar peca
-                setVazio(lin,col);
                 // tabuleiro[lin][col] = Vazio();
                 if (Pl == W)
                 {// Brancas
@@ -372,7 +348,7 @@ public:
 
     void ComputerPlay(Player Pl)
     { // falta implementar o computador jogar
-        Player Comp;
+        /*Player Comp;
         if(Pl==W){Comp=B;}
         else Comp=W;
         if(Comp==W){addLin=1;}
@@ -396,7 +372,7 @@ public:
                 }
             }
         }
-        return;
+        return;*/
     }
 
     int getQuantidadeB() { return tabuleiro[0][0].getQntBlack(); }
