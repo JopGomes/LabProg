@@ -127,6 +127,10 @@ public:
         pec = p.pec;
         Pl =p.Pl;
     }
+    ~Comum(){
+        if( Pl == B) qntBlack--;
+        else qntWhite--;
+    }
 };
 
 class Queen : public Peca
@@ -148,6 +152,10 @@ public:
             qntWhite++;
         pec = p.pec;
         Pl =p.Pl;
+    }
+    ~Queen(){
+        if( Pl == B) qntBlack--;
+        else qntWhite--;
     }
 };
 
@@ -272,7 +280,6 @@ public:
         }
 
 
-
         if (tabuleiro[lin][col].getChar() == QUEEN_WHITE || tabuleiro[lin][col].getChar() == QUEEN_BLACK)
         { // Dama
                 int addLin = (Tlin - lin) / abs(Tlin - lin);//direcões
@@ -317,7 +324,7 @@ public:
                     setVazio(lin-1,col);
                     // tabuleiro[lin-1][col] = Vazio();
                     if (Tlin == 0)
-                        tabuleiro[Tlin][col] = Queen(Pl);
+                        tabuleiro[Tlin][Tcol] = Queen(Pl);
                     else
                         tabuleiro[Tlin][Tcol] = Comum(Pl);
 
