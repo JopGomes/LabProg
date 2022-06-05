@@ -1,20 +1,15 @@
-// falta dama
 // falta IA decente
-// falta SFML
 // static count numero de peças
-// ver se tem jogada valida
-// anda frente ou pra tras
-// tratar caso de comer para tras
+// menu de opções 
+// mensagem final
+
+
 #include <SFML/Graphics.hpp>
 #include<iostream>
 #include<vector>
-//#include "gameTile.h"
 
 using namespace sf;
 using namespace std;
-
-
-vector<CircleShape> whites(12);
 
 #include <stdio.h>
 #include <iostream>
@@ -199,11 +194,11 @@ public:
         {
             for (int j = 0; j < 8; j++)
             {
-                if (i < 3 && (i % 2 == j % 2))
+                if (i < 3 && (i % 2 != j % 2))
                 {
                     tabuleiro[i][j] = Comum(W);
                 }
-                else if (i >= 5 && (i % 2 == j % 2))
+                else if (i >= 5 && (i % 2 != j % 2))
                 {
                     tabuleiro[i][j] = Comum(B);
                 }
@@ -273,10 +268,15 @@ public:
             int auxLin=lin;
             int auxCol=col;
             int bloqueio = 0;
-            while(lin != Tlin || col != Tcol){
+    
+            if(abs(Tlin-lin) != abs(Tcol -col)) return false;
+            while((lin != Tlin || col != Tcol))
+            {
                 lin += addLin;
                 col += addCol;
+                
                 if(tabuleiro[lin][col].getPlayer() != V) bloqueio += 1;
+ 
             }    
             if(bloqueio > 1) {
                 return false;
@@ -418,7 +418,7 @@ int main(){
     Tabuleiro p;
     Opponent Op = frnd;
     Player Pl = W;
-
+    vector<CircleShape> validPositions;
     RenderWindow window(VideoMode(500,500), "Damas");
 
     Texture backGroundTexture,texturaTeste;
@@ -431,7 +431,9 @@ int main(){
 
     Sprite background;
     background.setTexture(backGroundTexture);
-
+    CircleShape casaPossivel(10);
+    casaPossivel.setFillColor(Color(216,216,191,200));
+  
     CircleShape teste(20);
 
     while (window.isOpen())
@@ -449,8 +451,20 @@ int main(){
                         int destX,destY;
                         cout<< "x: " << x << " y: "<< y<<endl; 
 
-
+                        window.display();
                         while(Mouse::isButtonPressed(Mouse::Left)){}
+                        for(int i = 0; i < 8; i++){
+                            for(int j = 0 ; j < 8 ; j++){
+                                if((i+j)%2 == 1){
+                                    if(p.isValid(y,x,i,j,Pl)){
+                                        CircleShape temp(10);
+                                        casaPossivel.setPosition(Vector2f(52*(1+j)+10,50*(1+i)+10));
+                                        window.draw(casaPossivel);
+                                    }
+                                }
+                            }
+                        }
+                        window.display();
                         while(1){
                             if(Mouse::isButtonPressed(Mouse::Left)){
                                 destX = (Mouse::getPosition(window).x - 50)/52;
@@ -458,12 +472,14 @@ int main(){
                                 break;
                             }
                         }
+
                         cout<<"destX: "<< destX<<" destY"<<destY<<endl;
                         if(p.Jogada(y,x,destY,destX,Pl,Op)){
                             if(Pl == W) Pl = B;
                             else Pl = W;
                             break;
                         }
+                        break;
                     }
             }  
             
@@ -485,7 +501,7 @@ int main(){
                     window.draw(teste);
                 }
             }
-        }  
+        } 
         window.display();
     }
 
