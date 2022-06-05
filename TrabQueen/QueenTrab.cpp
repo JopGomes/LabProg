@@ -5,16 +5,32 @@
 // ver se tem jogada valida
 // anda frente ou pra tras
 // tratar caso de comer para tras
+#include <SFML/Graphics.hpp>
+#include<iostream>
+#include<vector>
+//#include "gameTile.h"
+
+using namespace sf;
+using namespace std;
+
+
+vector<CircleShape> whites(12);
 
 #include <stdio.h>
 #include <iostream>
-using namespace std;
+
 
 #define WHITE 'w'
 #define BLACK 'b'
 #define QUEEN_WHITE 'W'
 #define QUEEN_BLACK 'B'
 #define VAZIO ' '
+
+string arqWhitePeao =  "images/white_checker.png";
+string arqBlackPeao =  "images/black_checker.png";
+string arqWhiteQueen = "images/white_checker_King.png";
+string arqBlackQueen = "images/black_checker_King.png";
+
 
 enum Type
 {
@@ -42,6 +58,7 @@ protected:
     static int qntBlack;
     Player Pl;
     Type Ty;
+    string arquivo;
 
 public:
     Peca()
@@ -50,26 +67,30 @@ public:
         Pl = V;
     }
     Peca(Type P, Player T)
-    {
+    {   
         if (T == W && P == Peao)
         {
             pec = WHITE;
+            arquivo = arqWhitePeao;
         }
         if (T == B && P == Peao)
         {
             pec = BLACK;
+            arquivo = arqBlackPeao;
         }
         if (T == W && P == Q)
         {
             pec = QUEEN_WHITE;
+            arquivo = arqWhiteQueen;
         }
         if (T == B && P == Q)
         {
             pec = QUEEN_BLACK;
+            arquivo = arqBlackQueen;
         }
 
         Pl = T;
-        Ty=P;
+        Ty = P;
 
         if (T == B)
             qntBlack++;
@@ -96,6 +117,7 @@ public:
     }
     static int getQntWhite() { return qntWhite; }
     static int getQntBlack() { return qntBlack; }
+    string getTipo() {return arquivo;}
 };
 
 int Peca::qntBlack = 0;
@@ -299,37 +321,19 @@ public:
             if (abs(Tlin-lin) == 2 && abs(Tcol - col) == 2)
             { // Capturar peca
                 // tabuleiro[lin][col] = Vazio();
-                if (Pl == W)
-                {// Brancas
-                    if (Tcol > col)
-                        col += 1;
-                    else
-                        col -= 1;
-                    setVazio(lin+1,col);
-                    //tabuleiro[lin+1][col] = Vazio();
-
-                    if (Tlin == 7)
-                        tabuleiro[Tlin][Tcol] = Queen(Pl);
-                    else
-                        tabuleiro[Tlin][Tcol] = Comum(Pl);
-
-                    return true;
-                }
+                if (Tcol > col)
+                    col += 1;
                 else
-                {// Negras
-                    if (Tcol > col)
-                        col += 1;
-                    else
-                        col -= 1;
-                    setVazio(lin-1,col);
-                    // tabuleiro[lin-1][col] = Vazio();
-                    if (Tlin == 0)
-                        tabuleiro[Tlin][Tcol] = Queen(Pl);
-                    else
-                        tabuleiro[Tlin][Tcol] = Comum(Pl);
+                    col -= 1;
+                if(Pl == W) lin += 1;
+                else lin-=1;
 
-                    return true;
-                }
+                setVazio(lin,col);
+
+                if (Tlin == 7 || Tlin == 0) tabuleiro[Tlin][Tcol] = Queen(Pl);
+                else tabuleiro[Tlin][Tcol] = Comum(Pl);
+
+                return true;
             }
             else
             {   
@@ -376,24 +380,7 @@ public:
     {
         int countB = getQuantidadeB();
         int countW = getQuantidadeW();
-        /*for (int i = 0; 8 > i; i++)
-        {
-            for (int j = 0; 8 > j; j++)
-            {
-                if (tabuleiro[i][j].getChar()==QUEEN_BLACK || tabuleiro[i][j].getChar()==BLACK){
-                    countB++;
-                    if(i==0 && tabuleiro[i][j].getChar()==BLACK){
-                        tabuleiro[i][j] = Queen(B);
-                    }
-                }
-                if (tabuleiro[i][j].getChar()==QUEEN_WHITE || tabuleiro[i][j].getChar()==WHITE){
-                    countW++;
-                    if(i==7 && tabuleiro[i][j].getChar()==WHITE){
-                        tabuleiro[i][j] = Queen(W);
-                    }
-                }
-            }
-        }*/
+
         if (countB == 0)
         {
             cout << "White WIN";
@@ -406,6 +393,15 @@ public:
         }
         return true;
     }
+
+    Peca& getElement(int i, int j){
+        return tabuleiro[i][j];
+    }
+    
+    string getText(int i,int j){
+        return (tabuleiro[i][j].getTipo());
+    }
+
     ~Tabuleiro()
     {
         for (int i = 0; 8 > i; i++)
@@ -416,82 +412,83 @@ public:
     }
 };
 
-int main()
-{
+
+int main(){
+   
     Tabuleiro p;
-    string info, Target;
-    Player Pl = W;
     Opponent Op = frnd;
-    int i = 3;
-    int j=3;
-    bool jogadaValida = true;
-    // while (j != 1 && j != 2)
-    // {
-    //     cout << "Deseja Jogar com as:\n[1]Brancas\n[2]Negras\n";
-    //     cin >> j;
-    // }
-    // if (i == 1)
-    // {
-    //     Pl = W;
-    // }
-    // else
-    // {
-    //     Pl = B;
-    // }
-    while (i != 1 && i != 2)
-    {
-        cout << "Deseja Jogar contra:\n[1]Computador\n[2]Humano\n";
-        cin >> i;
+    Player Pl = W;
+
+    RenderWindow window(VideoMode(500,500), "Damas");
+
+    Texture backGroundTexture,texturaTeste;
+   
+    if(!backGroundTexture.loadFromFile("images/checker_board.jpg")){
+        cout<<"Erro ao carregar o tabuleiro"<<endl;
+        return 2;
     }
-    if (i == 1)
+    backGroundTexture.setSmooth(true);
+
+    Sprite background;
+    background.setTexture(backGroundTexture);
+
+    CircleShape teste(20);
+
+    while (window.isOpen())
     {
-        Op = comp;
-    }
-    else
-    {
-        Op = frnd;
-    }
-    if (Op == comp && jogadaValida && Pl == B)
-    {
-        p.ComputerPlay(Pl);
-    }
-    while (p.termino())
-    {
-        p.imprimir();
-        cout << "Numero de pecas Brancas: " << p.getQuantidadeW() << endl;
-        cout << "Numero de pecas Negras: " << p.getQuantidadeB() << endl;
-        cout << "\n";
-        cout << "Escreva a linha e a coluna no formato a1, que e o canto superior esquerdo\nDa peca escolhida:\n";
-        cin >> info;
-        if (info[0] - 'a' > 8 || info[1] - '1' > 8 || info[0] - 'a' < 0 || info[1] - '1' < 0)
+        Event event;
+        while (window.pollEvent(event))
         {
-            cout << "Digite um valor valido\n";
-            continue;
+            if (event.type == Event::Closed)
+                window.close();
+            if(event.type == Event::MouseButtonPressed){
+                if(event.mouseButton.button == Mouse::Left)
+                    if((Mouse::getPosition(window).x >= 50)&&(Mouse::getPosition(window).x <= 450)&&(Mouse::getPosition(window).y >= 50)&&(Mouse::getPosition(window).y <= 450)){
+                        int x = (Mouse::getPosition(window).x - 50)/52;
+                        int y = (Mouse::getPosition(window).y - 50)/50;
+                        int destX,destY;
+                        cout<< "x: " << x << " y: "<< y<<endl; 
+
+
+                        while(Mouse::isButtonPressed(Mouse::Left)){}
+                        while(1){
+                            if(Mouse::isButtonPressed(Mouse::Left)){
+                                destX = (Mouse::getPosition(window).x - 50)/52;
+                                destY = (Mouse::getPosition(window).y - 50)/50;
+                                break;
+                            }
+                        }
+                        cout<<"destX: "<< destX<<" destY"<<destY<<endl;
+                        if(p.Jogada(y,x,destY,destX,Pl,Op)){
+                            if(Pl == W) Pl = B;
+                            else Pl = W;
+                            break;
+                        }
+                    }
+            }  
+            
         }
-        cout << "Do destino:\n";
-        cin >> Target;
-        if (Target[0] - 'a' > 8 || Target[1] - '1' > 8 || Target[0] - 'a' < 0 || Target[1] - '1' < 0)
-        {
-            cout << "Digite um valor valido\n";
-            continue;
-        }
-        jogadaValida=  p.Jogada(info[1]-'1',info[0]-'a',Target[1]-'1',Target[0]-'a',Pl,Op);
-        if (!jogadaValida)
-        {
-            continue;
-        }
-        if (Op == frnd)
-        {
-            if (Pl == W)
-            {
-                Pl = B;
+
+        
+        window.clear();
+        window.draw(background);
+        for(int i = 0; i < 8; i++){
+            for(int j = 0; j < 8; j++){
+                if((p.getElement(i,j)).getPlayer() != V){
+                    if (!texturaTeste.loadFromFile(p.getText(i,j))){   
+                        cout<<"Erro ao renderizar pecas do tabuleiro"<<endl;
+                        return 1;
+                    }
+                    texturaTeste.setSmooth(true);
+                    teste.setTexture(&texturaTeste);
+                    teste.setPosition(Vector2f(50+52*j,50+50*i));
+                    window.draw(teste);
+                }
             }
-            else
-                Pl = W;
-        }
-        if (Op == comp)
-        {
-            p.ComputerPlay(Pl);
-        }
+        }  
+        window.display();
     }
+
+
+    return 0;
 }
