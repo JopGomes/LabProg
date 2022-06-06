@@ -13,7 +13,6 @@ public:
     friend bool operator-(Complex c);
     Complex& operator++ (){
         real+=1;
-        cout << real<<"oi\n";
         return *this;
     }
     Complex operator++ (int){
