@@ -70,6 +70,6 @@ int main(){
     cout<<"After the ++operator\n";
     cout << -(++c1)<<endl;
     cout <<-c1<<endl;
-
+    cout << c1[0]<<endl;
     cout << (float) c1<<"\n";
 }

@@ -14,35 +14,42 @@ public:
         pos = 1;
         fibs.push_back(0);
         fibs.push_back(1);
+        fibs.push_back(1);
     }
-    int seq(int val)
+    int seq(int pos)
     {
         int size = fibs.size();
-        auto it = find(fibs.begin(), fibs.end(), val);
-        if (it != fibs.end())
+        if (pos>=size)
         {
-            return distance(it, fibs.begin()) + 1;
-        }
-        else if (*it == val)
-        {
-            return size;
-        }
-        else
-        {
-            int newComponent;
-            while (newComponent != val)
+           int newComponent;
+            while (pos-size+1)
             {
-                auto it= fibs.rbegin();
-                newComponent = (*it) + (*it--);
+                newComponent = fibs[fibs.size()-1] + fibs[fibs.size()-2];
                 fibs.push_back(newComponent);
+                pos--;
             }
-            return (size);
+            return newComponent;
         }
+        else 
+        {
+            return fibs[pos];
+        }
+    }
+    int getPos(int numFib){
+        int pos=0;
+        while(seq(pos) != numFib){
+            pos++;
+        }
+        return pos;
     }
 };
 
 int main()
 {
     Fib a1;
-    cout << a1.seq(3);
+    cout << a1.seq(0)<<endl;
+    cout << a1.seq(1)<<endl;
+    cout << a1.seq(2)<<endl;
+    cout << a1.seq(3)<<endl;
+    cout << a1.getPos(3)<<endl;
 }
