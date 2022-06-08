@@ -23,18 +23,14 @@ bool carregar(vector<Pessoa>& v, string nomeDoArquivo){
       return false;
    }
    int i=1;
-    while(!Arq.eof()){
-            Pessoa newPessoa;
-            if(Arq.eof()){continue;}
-            Arq.read((char *) &v[i], sizeof(Pessoa));
+    while(Arq.good()){
+            Pessoa temp;
+            Arq.read((char *) &temp, sizeof(Pessoa));
+            v.push_back(temp);
             i++;
-            v.push_back(newPessoa);
+
     }
     Arq.close();
-    if(!Arq.good()) {
-      cout << "Error occurred at reading time!" << endl;
-         return false;
-    }
     return true;
 }
 
@@ -65,7 +61,10 @@ int main(){
     teste.nome="Jop";
     teste.idade=10;
     v.push_back(teste);
-    if(gravar(v,"output")){cout<<"Gravou";}
-    if(carregar(v,"output")){cout<<"Carregou";}
+    if(gravar(v,"outputTeste")){cout<<"Gravou";}
+    if(carregar(v,"outputTeste")){cout<<"Carregou";}
+    for(int i=0; v.size()>i;i++){
+        cout<<v[i].nome<<" "<<v[i].idade<<"\n";
+    }
     return 0;
 }
