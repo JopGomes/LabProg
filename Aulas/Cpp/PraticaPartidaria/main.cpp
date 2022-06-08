@@ -21,14 +21,14 @@ public:
     string getName(){return name;}
     string getPartido(){return party;}
     static int getTotal(){return total;}
-    bool operator<(Candidate a){if(votes > a.getVote())return true;else return false;}
+    // bool operator<(Candidate a){if(votes > a.getVote())return true;else return false;}
 
 };
 
-// bool sortVotes(Candidate a, Candidate b){
-//     if(a.getVote()>b.getVote())return true;
-//     else return false;
-// }
+bool sortVotes(Candidate a, Candidate b){
+    if(a.getVote()>b.getVote())return true;
+    else return false;
+}
 int main(){
 
     vector<Candidate> candidates;
@@ -58,8 +58,8 @@ int main(){
         urnaArq.close();
     }
 
-    // sort(candidates.begin(),candidates.end(),sortVotes);
-    sort(candidates.begin(),candidates.end());
+    sort(candidates.begin(),candidates.end(),sortVotes);
+    // sort(candidates.begin(),candidates.end());
 
     ofstream Output("output.txt");
     for(int i = 0;candidates.size()>i;i++){
