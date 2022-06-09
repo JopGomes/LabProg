@@ -90,6 +90,7 @@ int main()
     p.binaryInsert(1);
     p.binaryInsert(2);
     p.binaryInsert(3);
+    p.binaryInsert(5);
     p.binaryInsert(4);
     p.binaryInsert(-1);
     p.printTree();
