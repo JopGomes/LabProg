@@ -117,9 +117,9 @@ ostream& operator << (ostream &os, const vetorOrdenado<K> &obj)
 
 
 int main(){
-    vetorOrdenado<int> i(5);
+    vetorOrdenado<float> i(5);
     i<<"teste";
-    cout << i+9<<endl;
+    cout << i+9.0<<endl;
     cout << i-9<<endl;
     cout << i;
     vetorOrdenado<char> c(5);
