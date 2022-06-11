@@ -590,25 +590,6 @@ int main(){
         {
             if (event.type == Event::Closed)
                 window.close();
-            if(p.termino()){
-                Image image;
-                int tempo =1e7+1;
-                if(p.getQuantidadeB()){
-                    image.loadFromFile(blackWin);
-                }
-                if(p.getQuantidadeW()){
-                    image.loadFromFile(whiteWin);
-                }
-                Texture texture;
-                texture.loadFromImage(image);
-                Sprite sprite;
-                window.clear();
-                sprite.setTexture(texture, true);
-                window.draw(sprite);
-                window.display();
-                sleep(milliseconds(10000));
-                window.close();
-            }
             if(event.type == Event::MouseButtonPressed){
                 if(event.mouseButton.button == Mouse::Left)
                     if((Mouse::getPosition(window).x >= 50)&&(Mouse::getPosition(window).x <= 450)&&(Mouse::getPosition(window).y >= 50)&&(Mouse::getPosition(window).y <= 450)){
@@ -641,6 +622,25 @@ int main(){
 
                         cout<<"destX: "<< destX<<" destY: "<<destY<<endl;
                         if(p.Jogada(y,x,destY,destX,Pl,Op)){
+                            if(p.termino()){
+                                Image image;
+                                int tempo =1e7+1;
+                                if(p.getQuantidadeB()){
+                                    image.loadFromFile(blackWin);
+                                }
+                                if(p.getQuantidadeW()){
+                                    image.loadFromFile(whiteWin);
+                                }
+                                Texture texture;
+                                texture.loadFromImage(image);
+                                Sprite sprite;
+                                window.clear();
+                                sprite.setTexture(texture, true);
+                                window.draw(sprite);
+                                window.display();
+                                sleep(milliseconds(10000));
+                                window.close();
+                            }
                             if(Op==frnd){
                                 if(Pl == W) Pl = B;
                                 else Pl = W;
@@ -649,8 +649,28 @@ int main(){
                                 p.ComputerPlay(Pl);
                             }
                             //p.imprimir();
+                            if(p.termino()){
+                                Image image;
+                                int tempo =1e7+1;
+                                if(p.getQuantidadeB()){
+                                    image.loadFromFile(blackWin);
+                                }
+                                if(p.getQuantidadeW()){
+                                    image.loadFromFile(whiteWin);
+                                }
+                                Texture texture;
+                                texture.loadFromImage(image);
+                                Sprite sprite;
+                                window.clear();
+                                sprite.setTexture(texture, true);
+                                window.draw(sprite);
+                                window.display();
+                                sleep(milliseconds(10000));
+                                window.close();
+                            }
                             break;
                         }
+                        
                         break;
                     }
             }  
