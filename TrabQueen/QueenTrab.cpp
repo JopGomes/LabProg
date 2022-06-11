@@ -1,8 +1,5 @@
-// falta IA decente
-// static count numero de peças
-// menu de opções 
-// mensagem final
 
+// falta resolver o bug se ficar sem mandar incentivo
 
 #include <SFML/Graphics.hpp>
 #include<iostream>
@@ -182,6 +179,8 @@ class Tabuleiro
 {
     Peca **tabuleiro;
     int count;
+    vector<pair<int,int> > pecasW;
+    vector<pair<int,int> > pecasB;
 
 public:
     Tabuleiro()
@@ -199,10 +198,18 @@ public:
                 if (i < 3 && (i % 2 != j % 2))
                 {
                     tabuleiro[i][j] = Comum(W);
+                    pair<int,int> p;
+                    p.first = i;
+                    p.second = j;
+                    pecasW.push_back(p);
                 }
                 else if (i >= 5 && (i % 2 != j % 2))
                 {
                     tabuleiro[i][j] = Comum(B);
+                    pair<int,int> p;
+                    p.first = i;
+                    p.second = j;
+                    pecasB.push_back(p);         
                 }
                 else
                 {
@@ -212,9 +219,39 @@ public:
         }
         
     }
+    void addToVector(int lin,int col, Player pl){
+        pair<int,int> p;
+        p.first=lin;
+        p.second=col;
+        if(pl==W){
+            pecasW.push_back(p);
+        }
+        else if(pl==B){
+            pecasB.push_back(p);
+        }
+    }
     void setVazio(int lin , int col){
         tabuleiro[lin][col].setQnt(tabuleiro[lin][col].getPlayer());
+        if(tabuleiro[lin][col].getChar()==VAZIO){return;}
         tabuleiro[lin][col]=Vazio();
+        for(int i=0;pecasW.size()>i;i++){
+            pair<int,int> p;
+            p.first=lin;
+            p.second=col;
+            if(pecasW[i]==p){
+                pecasW.erase(pecasW.begin()+i);
+                return;
+            }
+        }
+        for(int i=0;pecasB.size()>i;i++){
+            pair<int,int> p;
+            p.first=lin;
+            p.second=col;
+            if(pecasB[i]==p){
+                pecasB.erase(pecasB.begin()+i);
+                return;
+            }
+        }
     }
     void imprimir()
     {
@@ -234,8 +271,9 @@ public:
         }
         cout << "\n";
     }
-    bool isValid(int lin, int col, int Tlin, int Tcol, Player Player)
+    int isValid(int lin, int col, int Tlin, int Tcol, Player Player)
     {    
+        int capture=1;
         if (lin >= 8 || col >= 8 || lin < 0 || col < 0 || Tlin >= 8 || Tcol >= 8 || Tlin < 0 || Tcol < 0) return false;
 
         if(Player != tabuleiro[lin][col].getPlayer()) return false; //posicao inicial invalida
@@ -244,21 +282,21 @@ public:
 
         if(tabuleiro[lin][col].getChar() == WHITE|| tabuleiro[lin][col].getChar() == BLACK){ //Comportamento do peao
             if(Player == W){
-                if(Tlin - lin == 1 && abs(Tcol-col) == 1) return true; //andar apenas uma casa
+                if(Tlin - lin == 1 && abs(Tcol-col) == 1) return capture; //andar apenas uma casa
                 else if(Tlin - lin == 2 && abs(Tcol -col) == 2){ //tentar comer
                     if(Tcol > col) col += 1;
                     else col -= 1;
-
+                    capture=2;
                     if(tabuleiro[lin+1][col].getPlayer() != B ) return false; //se não for uma peça inimiga
                 }
                 else return false;   
             }
             else{
-                if(Tlin - lin == -1 && abs(Tcol-col) == 1) return true; //andar apenas uma casa
+                if(Tlin - lin == -1 && abs(Tcol-col) == 1) return capture; //andar apenas uma casa
                 else if(Tlin - lin == -2 && abs(Tcol -col) == 2){ //tentar comer
                     if(Tcol > col) col += 1;
                     else col -= 1;
-
+                    capture=2;
                     if(tabuleiro[lin-1][col].getPlayer() != W ) return false; //se não for uma peça inimiga
                 }
                 else return false;    
@@ -280,19 +318,20 @@ public:
                 if(tabuleiro[lin][col].getPlayer() != V) bloqueio += 1;
  
             }    
-            if(bloqueio > 1) {
+            if(bloqueio > 1) {// Mais de uma peça no caminho
                 return false;
             }
             else{
-                if(bloqueio == 1){
+                if(bloqueio == 1){// Peca no caminho
                     if(tabuleiro[Tlin][Tcol].getPlayer() != V || !(((tabuleiro[Tlin-addLin][Tcol-addCol].getPlayer() != Player ))&&((tabuleiro[Tlin-addLin][Tcol-addCol].getPlayer() != V )))){
                         return false;
                     }
+                    capture=2;
                 }
-                return true;
+                return capture;
             }
         }
-        return true;
+        return capture;
     }
     
     bool Jogada(int lin, int col, int Tlin, int Tcol, Player Pl, Opponent Op)
@@ -302,8 +341,6 @@ public:
             cout << "Jogada Invalida\n";
             return false;
         }
-
-
         if (tabuleiro[lin][col].getChar() == QUEEN_WHITE || tabuleiro[lin][col].getChar() == QUEEN_BLACK)
         { // Dama
                 int addLin = (Tlin - lin) / abs(Tlin - lin);//direcões
@@ -314,7 +351,9 @@ public:
                 // tabuleiro[auxLin][auxCol] = Vazio();
                 // tabuleiro[Tlin-addLin][Tcol-addCol] = Vazio();
                 tabuleiro[Tlin][Tcol] = Queen(Pl);
-            return true;    
+                addToVector(Tlin,Tcol,Pl);
+                
+            return true;
         }
         else
         { // Normal
@@ -332,15 +371,21 @@ public:
 
                 setVazio(lin,col);
 
-                if (Tlin == 7 || Tlin == 0) tabuleiro[Tlin][Tcol] = Queen(Pl);
-                else tabuleiro[Tlin][Tcol] = Comum(Pl);
+                if (Tlin == 7 || Tlin == 0) {tabuleiro[Tlin][Tcol] = Queen(Pl);addToVector(Tlin,Tcol,Pl);}
+                else {
+                    tabuleiro[Tlin][Tcol] = Comum(Pl);
+                    addToVector(Tlin,Tcol,Pl);
+                }
 
                 return true;
             }
             else
             {   
-                if(Tlin == 0 || Tlin == 7) tabuleiro[Tlin][Tcol] = Queen(Pl);
-                else tabuleiro[Tlin][Tcol] = Comum(Pl);
+                if(Tlin == 0 || Tlin == 7) {tabuleiro[Tlin][Tcol] = Queen(Pl); addToVector(Tlin,Tcol,Pl);}
+                else {
+                    tabuleiro[Tlin][Tcol] = Comum(Pl);
+                    addToVector(Tlin,Tcol,Pl);
+                }
                 return true;
             }
         }
@@ -348,31 +393,61 @@ public:
 
     void ComputerPlay(Player Pl)
     { // falta implementar o computador jogar
-        /*Player Comp;
-        if(Pl==W){Comp=B;}
-        else Comp=W;
-        if(Comp==W){addLin=1;}
-        else addLin=-1;
-        for (int i = 0; 8 > i; i++)
-        {
-            for (int j = 0; 8 > j; j++)
-            {
-                if (tabuleiro[i][j].getPlayer()==Comp){
-                    if(tabuleiro[i][j].getType()==Peao){//Peao
-                        if(tabuleiro[i+addLin][j+addLin].getPlayer!=V){//Capturar peca
-                            if(isValid(i,j,i+addLin,j+addLin,Comp)){
-                                return false;
+        Player Comp;
+        int last[4],addLin;
+        if(Pl==W){Comp=B;addLin=-1;}
+        else {Comp=W,addLin=1;}
+        if(Comp==W){
+            for(int i=0;pecasW.size()>i;i++){
+                int lin,col;
+                lin=pecasW[i].first;
+                col=pecasW[i].second;
+                for(int i = 0; i < 8; i++){
+                    for(int j = 0 ; j < 8 ; j++){
+                        if((i+j)%2 == 1){
+                            if(isValid(lin,col,i,j,Comp)==2){
+                                
+                                Jogada(lin,col,i,j,Comp,comp);
+                                return;
+                            }
+                            if(isValid(lin,col,i,j,Comp)==1){
+                                last[0]=lin;
+                                last[1]=col;
+                                last[2]=i;
+                                last[3]=j;
                             }
                         }
-                        if()
-                    }
-                    else{//Dama}
-                    
                     }
                 }
             }
+            Jogada(last[0],last[1],last[2],last[3],Comp,comp);
         }
-        return;*/
+        else{
+            for(int i=0;pecasB.size()>i;i++){
+                int lin,col;
+                lin=pecasB[i].first;
+                col=pecasB[i].second;
+                for(int i = 0; i < 8; i++){
+                    for(int j = 0 ; j < 8 ; j++){
+                        if((i+j)%2 == 1){
+                            if(isValid(lin,col,i,j,Comp)==2){
+                                
+                                Jogada(lin,col,i,j,Comp,comp);
+                                return;
+                            }
+                            if(isValid(lin,col,i,j,Comp)==1){
+                                last[0]=lin;
+                                last[1]=col;
+                                last[2]=i;
+                                last[3]=j;
+                            }
+                        }
+                    }
+                }
+            }
+            Jogada(last[0],last[1],last[2],last[3],Comp,comp);
+        }
+        return;
     }
 
     int getQuantidadeB() { return tabuleiro[0][0].getQntBlack(); }
@@ -536,12 +611,16 @@ int main(){
                             }
                         }
 
-                        cout<<"destX: "<< destX<<" destY"<<destY<<endl;
+                        cout<<"destX: "<< destX<<" destY: "<<destY<<endl;
                         if(p.Jogada(y,x,destY,destX,Pl,Op)){
                             if(Op==frnd){
                                 if(Pl == W) Pl = B;
                                 else Pl = W;
                             }
+                            else{
+                                p.ComputerPlay(Pl);
+                            }
+                            //p.imprimir();
                             break;
                         }
                         break;
