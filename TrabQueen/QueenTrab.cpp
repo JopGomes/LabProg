@@ -394,7 +394,9 @@ public:
     void ComputerPlay(Player Pl)
     { // falta implementar o computador jogar
         Player Comp;
-        int last[4],addLin;
+        // int last[4]; Para ser sempre a ultima jogada valida
+        vector<pair<pair<int,int>, pair<int,int> > > jogadas; // para ser aleatorio
+        int addLin;
         if(Pl==W){Comp=B;addLin=-1;}
         else {Comp=W,addLin=1;}
         if(Comp==W){
@@ -411,16 +413,26 @@ public:
                                 return;
                             }
                             if(isValid(lin,col,i,j,Comp)==1){
-                                last[0]=lin;
-                                last[1]=col;
-                                last[2]=i;
-                                last[3]=j;
+                                pair<pair<int,int>, pair<int,int> > last;
+                                pair<int,int> inicio;
+                                pair<int,int> fim;
+                                inicio.first=lin;
+                                inicio.second=col;
+                                fim.first=i;
+                                fim.second=j;
+                                last.first=inicio;
+                                last.second=fim;
+                                // last[0]=lin;
+                                // last[1]=col;
+                                // last[2]=i;
+                                // last[3]=j;
+                                jogadas.push_back(last);
                             }
                         }
                     }
                 }
             }
-            Jogada(last[0],last[1],last[2],last[3],Comp,comp);
+
         }
         else{
             for(int i=0;pecasB.size()>i;i++){
@@ -436,17 +448,33 @@ public:
                                 return;
                             }
                             if(isValid(lin,col,i,j,Comp)==1){
-                                last[0]=lin;
-                                last[1]=col;
-                                last[2]=i;
-                                last[3]=j;
+                                pair<pair<int,int>, pair<int,int> > last;
+                                pair<int,int> inicio;
+                                pair<int,int> fim;
+                                inicio.first=lin;
+                                inicio.second=col;
+                                fim.first=i;
+                                fim.second=j;
+                                last.first=inicio;
+                                last.second=fim;
+                                // last[0]=lin;
+                                // last[1]=col;
+                                // last[2]=i;
+                                // last[3]=j;
+                                jogadas.push_back(last);
                             }
                         }
                     }
                 }
             }
-            Jogada(last[0],last[1],last[2],last[3],Comp,comp);
         }
+        // Jogada(last[0],last[1],last[2],last[3],Comp,comp);
+        srand(time(0));
+        random_shuffle(jogadas.begin(),jogadas.end());
+        auto it = jogadas.begin();
+        pair<pair<int,int>, pair<int,int> > aleatoria = (*it);
+        cout << aleatoria.first.first;
+        Jogada(aleatoria.first.first,aleatoria.first.second,aleatoria.second.first,aleatoria.second.second,Comp,comp);
         return;
     }
 
