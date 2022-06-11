@@ -26,6 +26,8 @@ string arqBlackPeao =  "images/black_checker.png";
 string arqWhiteQueen = "images/white_checker_King.png";
 string arqBlackQueen = "images/black_checker_King.png";
 string mainMenu = "images/checker_main_menu.jpg";
+string whiteWin = "images/white_win.png";
+string blackWin = "images/black_win.png";
 
 enum Type
 {
@@ -384,14 +386,14 @@ public:
         if (countB == 0)
         {
             cout << "White WIN";
-            return false;
+            return true;
         }
         if (countW == 0)
         {
             cout << "Black WIN";
-            return false;
+            return true;
         }
-        return true;
+        return false;
     }
 
     Peca& getElement(int i, int j){
@@ -422,7 +424,7 @@ int main(){
     RenderWindow window(VideoMode(500,500), "Main Menu");
     Sprite background;
     Texture backGroundTexture,texturaTeste,backGroundTextureMenu;
-    int j = 3,aux=0;
+    int j = 3,aux=0,auxClear;
     if(!backGroundTextureMenu.loadFromFile(mainMenu)){
         cout<<"Erro ao carregar o Menu"<<endl;
         return 2;
@@ -480,10 +482,30 @@ int main(){
    while (window.isOpen())
     {
         Event event;
+        auxClear=0;
         while (window.pollEvent(event))
         {
             if (event.type == Event::Closed)
                 window.close();
+            if(p.termino()){
+                Image image;
+                int tempo =1e7+1;
+                if(p.getQuantidadeB()){
+                    image.loadFromFile(blackWin);
+                }
+                if(p.getQuantidadeW()){
+                    image.loadFromFile(whiteWin);
+                }
+                Texture texture;
+                texture.loadFromImage(image);
+                Sprite sprite;
+                window.clear();
+                sprite.setTexture(texture, true);
+                window.draw(sprite);
+                window.display();
+                sleep(milliseconds(10000));
+                window.close();
+            }
             if(event.type == Event::MouseButtonPressed){
                 if(event.mouseButton.button == Mouse::Left)
                     if((Mouse::getPosition(window).x >= 50)&&(Mouse::getPosition(window).x <= 450)&&(Mouse::getPosition(window).y >= 50)&&(Mouse::getPosition(window).y <= 450)){
