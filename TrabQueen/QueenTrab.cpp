@@ -446,7 +446,7 @@ int main(){
 
                     if((Mouse::getPosition(window).x >= 250)){
                         Op = frnd;
-                        cout<<"FRND";
+                        cout<<"FRND\n";
                         window.setTitle("Damas");
                         window.clear();
                         aux++;    
@@ -454,7 +454,7 @@ int main(){
                     }
                     else {
                         Op=comp;
-                        cout<<"PC";
+                        cout<<"PC\n";
                         window.setTitle("Damas");
                         window.clear();
                         aux++;
