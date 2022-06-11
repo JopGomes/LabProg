@@ -670,7 +670,8 @@ int main(){
                     texturaTeste.setSmooth(true);
                     teste.setTexture(&texturaTeste);
                     teste.setPosition(Vector2f(50+52*j,50+50*i));
-                    teste.setOutlineColor(Color(216,216,191,100));
+                    // teste.setOutlineColor(Color(216,216,191,100));
+                    teste.setOutlineColor(Color(254,254, 254,100));
                     teste.setOutlineThickness(0);
                     if((p.getElement(i,j)).getPlayer() == Pl) teste.setOutlineThickness(2);
                     window.draw(teste);
