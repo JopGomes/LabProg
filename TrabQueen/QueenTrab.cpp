@@ -25,7 +25,7 @@ string arqWhitePeao =  "images/white_checker.png";
 string arqBlackPeao =  "images/black_checker.png";
 string arqWhiteQueen = "images/white_checker_King.png";
 string arqBlackQueen = "images/black_checker_King.png";
-
+string mainMenu = "images/checker_main_menu.jpg";
 
 enum Type
 {
@@ -419,24 +419,65 @@ int main(){
     Opponent Op = frnd;
     Player Pl = W;
     vector<CircleShape> validPositions;
-    RenderWindow window(VideoMode(500,500), "Damas");
-
-    Texture backGroundTexture,texturaTeste;
-   
-    if(!backGroundTexture.loadFromFile("images/checker_board.jpg")){
-        cout<<"Erro ao carregar o tabuleiro"<<endl;
+    RenderWindow window(VideoMode(500,500), "Main Menu");
+    Sprite background;
+    Texture backGroundTexture,texturaTeste,backGroundTextureMenu;
+    int j = 3,aux=0;
+    if(!backGroundTextureMenu.loadFromFile(mainMenu)){
+        cout<<"Erro ao carregar o Menu"<<endl;
         return 2;
     }
-    backGroundTexture.setSmooth(true);
+    backGroundTextureMenu.setSmooth(true);
+    background.setTexture(backGroundTextureMenu);
+    window.draw(background);
+    window.display();
 
-    Sprite background;
-    background.setTexture(backGroundTexture);
+    while(window.isOpen()){
+        Event eventMenu;
+        while (window.pollEvent(eventMenu))
+        {
+            if (eventMenu.type == Event::Closed)
+                window.close();
+            if(eventMenu.type == Event::MouseButtonPressed){
+                window.display();
+                if(eventMenu.mouseButton.button == Mouse::Left){
+
+                    if((Mouse::getPosition(window).x >= 250)){
+                        Op = frnd;
+                        cout<<"FRND";
+                        window.setTitle("Damas");
+                        window.clear();
+                        aux++;    
+                        break;
+                    }
+                    else {
+                        Op=comp;
+                        cout<<"PC";
+                        window.setTitle("Damas");
+                        window.clear();
+                        aux++;
+                        break; 
+                    }
+                }
+            }
+        }
+        if(aux){break;}
+    }
+   
+
     CircleShape casaPossivel(10);
     casaPossivel.setFillColor(Color(216,216,191,200));
   
     CircleShape teste(20);
-
-    while (window.isOpen())
+    if(!backGroundTexture.loadFromFile("images/checker_board.jpg")){
+        cout<<"Erro ao carregar o tabuleiro"<<endl;
+        return 2;
+    }   
+    backGroundTexture.setSmooth(true);
+    background.setTexture(backGroundTexture);
+    window.draw(background);
+    window.display();
+   while (window.isOpen())
     {
         Event event;
         while (window.pollEvent(event))
@@ -475,8 +516,10 @@ int main(){
 
                         cout<<"destX: "<< destX<<" destY"<<destY<<endl;
                         if(p.Jogada(y,x,destY,destX,Pl,Op)){
-                            if(Pl == W) Pl = B;
-                            else Pl = W;
+                            if(Op==frnd){
+                                if(Pl == W) Pl = B;
+                                else Pl = W;
+                            }
                             break;
                         }
                         break;

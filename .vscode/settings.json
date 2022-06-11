@@ -1,23 +1,7 @@
 {
     "files.associations": {
-        "stdc++.h": "c",
-        "*.tcc": "c",
-        "deque": "c",
-        "list": "c",
-        "string": "c",
-        "unordered_map": "c",
-        "unordered_set": "c",
-        "vector": "c",
-        "string_view": "c",
-        "ranges": "c",
-        "iostream": "cpp",
-        "cmath": "cpp",
-        "numbers": "cpp",
-        "algorithm": "cpp",
-        "new": "cpp",
+        "fstream": "cpp",
         "ostream": "cpp",
-        "iosfwd": "cpp",
-        "iomanip": "cpp"
-    },
-    "C_Cpp.errorSquiggles": "Disabled"
+        "iostream": "cpp"
+    }
 }
