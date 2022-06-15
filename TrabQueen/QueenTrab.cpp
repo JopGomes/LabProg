@@ -701,7 +701,6 @@ int main()
                         cout << "destX: " << destX << " destY: " << destY << endl;
                         if (p.Jogada(y, x, destY, destX, Pl, Op))
                         {   sound.play();
-                            p.imprimir();
                             if (p.termino())
                             {
                                 Image image;
@@ -734,7 +733,6 @@ int main()
                             else
                             {
                                 p.ComputerPlay(Pl);
-                                p.imprimir();
                             }
                             // p.imprimir();
                             if (p.termino())
@@ -774,7 +772,6 @@ int main()
         if (isGameBegin)
         {   background.setTexture(backGroundTexture);
             window.draw(background);
-            
             for (int i = 0; i < 8; i++)
             {
                 for (int j = 0; j < 8; j++)
