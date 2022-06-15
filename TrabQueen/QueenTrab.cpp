@@ -10,7 +10,6 @@ using namespace sf;
 using namespace std;
 
 #include <stdio.h>
-#include <iostream>
 
 #define WHITE 'w'
 #define BLACK 'b'
@@ -53,8 +52,6 @@ protected:
     Player Pl;
     Type Ty;
     string arquivo;
-
-public:
     Peca()
     {
         pec = VAZIO;
@@ -100,6 +97,8 @@ public:
         pec = p.pec;
         Pl = p.Pl;
     }
+
+public:
     char getChar() { return pec; }
     Type getType() { return Ty; }
     Player getPlayer() { return Pl; }
@@ -182,7 +181,7 @@ public:
     }
 };
 
-class Tabuleiro
+class Tabuleiro:public Peca
 {
     Peca **tabuleiro;
     int count;
@@ -196,7 +195,7 @@ public:
         tabuleiro = new Peca *[8];
         for (int i = 0; 8 > i; i++)
         {
-            tabuleiro[i] = new Peca[8];
+            tabuleiro[i] = new Vazio[8];
         }
         for (int i = 0; i < 8; i++)
         {
@@ -476,6 +475,7 @@ public:
                             {
 
                                 Jogada(lin, col, i, j, Comp, comp);
+                                imprimir();
                                 return;
                             }
                             if (isValid(lin, col, i, j, Comp) == 1)
@@ -517,6 +517,7 @@ public:
                             {
 
                                 Jogada(lin, col, i, j, Comp, comp);
+                                imprimir();
                                 return;
                             }
                             if (isValid(lin, col, i, j, Comp) == 1)
@@ -543,11 +544,17 @@ public:
         }
         // Jogada(last[0],last[1],last[2],last[3],Comp,comp);
         srand(time(0));
+        if(jogadas.size() == 0){
+            if(Pl == W) qntWhite = 0;
+            else qntBlack = 0;
+            termino();
+        }
         random_shuffle(jogadas.begin(), jogadas.end());
         auto it = jogadas.begin();
         pair<pair<int, int>, pair<int, int>> aleatoria = (*it);
         cout << aleatoria.first.first;
         Jogada(aleatoria.first.first, aleatoria.first.second, aleatoria.second.first, aleatoria.second.second, Comp, comp);
+        imprimir();
         return;
     }
 
@@ -701,6 +708,7 @@ int main()
                         cout << "destX: " << destX << " destY: " << destY << endl;
                         if (p.Jogada(y, x, destY, destX, Pl, Op))
                         {   sound.play();
+                            p.imprimir();
                             if (p.termino())
                             {
                                 Image image;
