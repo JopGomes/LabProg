@@ -184,7 +184,8 @@ public:
 class Tabuleiro:public Peca
 {
     Peca **tabuleiro;
-    int count;
+    int count; //------ variavel para contar o numero de jogadas sem capturas
+    
     vector<pair<int, int>> pecasW;
     vector<pair<int, int>> pecasB;
 
@@ -238,6 +239,7 @@ public:
             pecasB.push_back(p);
         }
     }
+    //------ criar metodo para adicionar 1 no contador de jogadas sem captura
     void setVazio(int lin, int col)
     {
         tabuleiro[lin][col].setQnt(tabuleiro[lin][col].getPlayer());
@@ -376,6 +378,7 @@ public:
 
     bool Jogada(int lin, int col, int Tlin, int Tcol, Player Pl, Opponent Op)
     {
+        //------ alterar para ser do tipo inteiro retornando o valor de isValid
         if (!isValid(lin, col, Tlin, Tcol, Pl))
         {
             cout << "Jogada Invalida\n";
@@ -444,7 +447,7 @@ public:
     }
 
     void ComputerPlay(Player Pl)
-    { // falta implementar o computador jogar
+    {
         Player Comp;
         // int last[4]; Para ser sempre a ultima jogada valida
         vector<pair<pair<int, int>, pair<int, int>>> jogadas; // para ser aleatorio
@@ -709,6 +712,8 @@ int main()
                         if (p.Jogada(y, x, destY, destX, Pl, Op))
                         {   sound.play();
                             p.imprimir();
+                            //------usar if(auxCapture != 2) , onde auxCapture = p.jogada();
+                            //E colocar um p.playWithNoCapture();
                             if (p.termino())
                             {
                                 Image image;
@@ -740,6 +745,8 @@ int main()
                             }
                             else
                             {
+                                //------usar if(auxCapture != 2) , onde auxCapture = p.jogada();
+                                //E colocar um p.playWithNoCapture();
                                 p.ComputerPlay(Pl);
                             }
                             // p.imprimir();
@@ -747,6 +754,7 @@ int main()
                             {
                                 Image image;
                                 int tempo = 1e7 + 1;
+                                //else if else if bla bla
                                 if (p.getQuantidadeB())
                                 {
                                     image.loadFromFile(blackWin);
@@ -755,6 +763,8 @@ int main()
                                 {
                                     image.loadFromFile(whiteWin);
                                 }
+                                //------else {}
+                                // colocar dentro do else uma tela de empate
                                 Texture texture;
                                 texture.loadFromImage(image);
                                 Sprite sprite;
