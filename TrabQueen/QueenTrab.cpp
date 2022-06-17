@@ -24,6 +24,7 @@ string arqBlackQueen = "images/black_checker_King.png";
 string mainMenu = "images/checker_main_menu.jpg";
 string whiteWin = "images/white_win.png";
 string blackWin = "images/black_win.png";
+string draw = "images/draw.png";
 
 enum Type
 {
@@ -225,6 +226,7 @@ public:
             }
         }
     }
+    int getCount(){return count;}
     void addToVector(int lin, int col, Player pl)
     {
         pair<int, int> p;
@@ -557,10 +559,13 @@ public:
         pair<pair<int, int>, pair<int, int>> aleatoria = (*it);
         cout << aleatoria.first.first;
         Jogada(aleatoria.first.first, aleatoria.first.second, aleatoria.second.first, aleatoria.second.second, Comp, comp);
+        playWithNoCapture();
         imprimir();
         return;
     }
-
+    void playWithNoCapture(){
+        count++;
+    }
     int getQuantidadeB() { return tabuleiro[0][0].getQntBlack(); }
     int getQuantidadeW() { return tabuleiro[0][0].getQntWhite(); }
 
@@ -579,6 +584,7 @@ public:
             cout << "Black WIN";
             return true;
         }
+        if(count == 20){cout<<"Tie";return true;}
         return false;
     }
 
@@ -709,20 +715,23 @@ int main()
                         }
 
                         cout << "destX: " << destX << " destY: " << destY << endl;
-                        if (p.Jogada(y, x, destY, destX, Pl, Op))
+                        int auxCapture = p.Jogada(y, x, destY, destX, Pl, Op);
+                        if (auxCapture)
                         {   sound.play();
                             p.imprimir();
-                            //------usar if(auxCapture != 2) , onde auxCapture = p.jogada();
-                            //E colocar um p.playWithNoCapture();
+                            if(auxCapture != 2){p.playWithNoCapture();}
                             if (p.termino())
                             {
                                 Image image;
                                 int tempo = 1e7 + 1;
-                                if (p.getQuantidadeB())
+                                if(p.getCount()==20){
+                                    image.loadFromFile(draw);
+                                }
+                                else if (p.getQuantidadeB())
                                 {
                                     image.loadFromFile(blackWin);
                                 }
-                                if (p.getQuantidadeW())
+                                else if (p.getQuantidadeW())
                                 {
                                     image.loadFromFile(whiteWin);
                                 }
@@ -745,8 +754,6 @@ int main()
                             }
                             else
                             {
-                                //------usar if(auxCapture != 2) , onde auxCapture = p.jogada();
-                                //E colocar um p.playWithNoCapture();
                                 p.ComputerPlay(Pl);
                             }
                             // p.imprimir();
