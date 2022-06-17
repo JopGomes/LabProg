@@ -769,16 +769,17 @@ int main()
                             {
                                 Image image;
                                 int tempo = 1e7 + 1;
-                                if (p.getQuantidadeB())
+                                if(p.getCount()==20){
+                                    image.loadFromFile(draw);
+                                }
+                                else if (p.getQuantidadeB())
                                 {
                                     image.loadFromFile(blackWin);
                                 }
-                                if (p.getQuantidadeW())
+                                else if (p.getQuantidadeW())
                                 {
                                     image.loadFromFile(whiteWin);
                                 }
-                                //------else {}
-                                // colocar dentro do else uma tela de empate
                                 Texture texture;
                                 texture.loadFromImage(image);
                                 Sprite sprite;
