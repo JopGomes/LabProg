@@ -480,6 +480,7 @@ public:
                             {
 
                                 Jogada(lin, col, i, j, Comp, comp);
+                                playWithCapture();
                                 imprimir();
                                 return;
                             }
@@ -522,6 +523,7 @@ public:
                             {
 
                                 Jogada(lin, col, i, j, Comp, comp);
+                                playWithCapture();
                                 imprimir();
                                 return;
                             }
@@ -565,6 +567,11 @@ public:
     }
     void playWithNoCapture(){
         count++;
+        cout << count <<"Jogadas sem captura";
+    }
+    void playWithCapture(){
+        count=0;
+        cout << count <<"Jogadas sem captura";
     }
     int getQuantidadeB() { return tabuleiro[0][0].getQntBlack(); }
     int getQuantidadeW() { return tabuleiro[0][0].getQntWhite(); }
@@ -720,6 +727,7 @@ int main()
                         {   sound.play();
                             p.imprimir();
                             if(auxCapture != 2){p.playWithNoCapture();}
+                            else { p.playWithCapture();}
                             if (p.termino())
                             {
                                 Image image;
@@ -761,7 +769,6 @@ int main()
                             {
                                 Image image;
                                 int tempo = 1e7 + 1;
-                                //else if else if bla bla
                                 if (p.getQuantidadeB())
                                 {
                                     image.loadFromFile(blackWin);
