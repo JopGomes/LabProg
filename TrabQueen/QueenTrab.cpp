@@ -394,6 +394,7 @@ public:
     bool Jogada(int lin, int col, int Tlin, int Tcol, Player Pl, Opponent Op)
     {
         //------ alterar para ser do tipo inteiro retornando o valor de isValid
+        // e com isso da pra chamar menos vezes o isValid, mas o programa já ta funcionando
         if (!isValid(lin, col, Tlin, Tcol, Pl))
         {
             cout << "Jogada Invalida\n";
