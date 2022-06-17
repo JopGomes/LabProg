@@ -226,6 +226,18 @@ public:
             }
         }
     }
+    //Criar metodo para adicionar 1 no contador de jogadas sem captura
+    void playWithNoCapture(){
+        count++;
+        cout <<"\n" <<count <<" Jogadas sem captura"<<endl;
+    }
+    //Criar metodo para adicionar zerar contador de jogadas na captura
+    void playWithCapture(){
+        count=0;
+        cout <<"\n" << count <<" Jogadas sem captura"<<endl;
+    }
+    int getQuantidadeB() { return tabuleiro[0][0].getQntBlack(); }
+    int getQuantidadeW() { return tabuleiro[0][0].getQntWhite(); }
     int getCount(){return count;}
     void addToVector(int lin, int col, Player pl)
     {
@@ -241,7 +253,6 @@ public:
             pecasB.push_back(p);
         }
     }
-    //------ criar metodo para adicionar 1 no contador de jogadas sem captura
     void setVazio(int lin, int col)
     {
         tabuleiro[lin][col].setQnt(tabuleiro[lin][col].getPlayer());
@@ -316,6 +327,7 @@ public:
                     else
                         col -= 1;
                     capture = 2;
+                    
                     if (tabuleiro[lin + 1][col].getPlayer() != B)
                         return false; // se não for uma peça inimiga
                 }
@@ -375,6 +387,7 @@ public:
                 return capture;
             }
         }
+
         return capture;
     }
 
@@ -565,16 +578,7 @@ public:
         imprimir();
         return;
     }
-    void playWithNoCapture(){
-        count++;
-        cout << count <<"Jogadas sem captura";
-    }
-    void playWithCapture(){
-        count=0;
-        cout << count <<"Jogadas sem captura";
-    }
-    int getQuantidadeB() { return tabuleiro[0][0].getQntBlack(); }
-    int getQuantidadeW() { return tabuleiro[0][0].getQntWhite(); }
+
 
     bool termino()
     {
@@ -722,12 +726,11 @@ int main()
                         }
 
                         cout << "destX: " << destX << " destY: " << destY << endl;
-                        int auxCapture = p.Jogada(y, x, destY, destX, Pl, Op);
-                        if (auxCapture)
+                        if(p.isValid(y, x, destY, destX, Pl)==2){p.playWithCapture();}    
+                        if(p.isValid(y, x, destY, destX, Pl)==1){p.playWithNoCapture();}
+                        if (p.Jogada(y, x, destY, destX, Pl, Op))
                         {   sound.play();
                             p.imprimir();
-                            if(auxCapture != 2){p.playWithNoCapture();}
-                            else { p.playWithCapture();}
                             if (p.termino())
                             {
                                 Image image;
