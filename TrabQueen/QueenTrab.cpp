@@ -229,12 +229,10 @@ public:
     //Criar metodo para adicionar 1 no contador de jogadas sem captura
     void playWithNoCapture(){
         count++;
-        cout <<"\n" <<count <<" Jogadas sem captura"<<endl;
     }
     //Criar metodo para adicionar zerar contador de jogadas na captura
     void playWithCapture(){
         count=0;
-        cout <<"\n" << count <<" Jogadas sem captura"<<endl;
     }
     int getQuantidadeB() { return tabuleiro[0][0].getQntBlack(); }
     int getQuantidadeW() { return tabuleiro[0][0].getQntWhite(); }
@@ -393,8 +391,6 @@ public:
 
     bool Jogada(int lin, int col, int Tlin, int Tcol, Player Pl, Opponent Op)
     {
-        //------ alterar para ser do tipo inteiro retornando o valor de isValid
-        // e com isso da pra chamar menos vezes o isValid, mas o programa já ta funcionando
         if (!isValid(lin, col, Tlin, Tcol, Pl))
         {
             cout << "Jogada Invalida\n";
@@ -407,8 +403,6 @@ public:
             int auxLin = lin, auxCol = col;
             setVazio(auxLin, auxCol);
             setVazio(Tlin - addLin, Tcol - addCol);
-            // tabuleiro[auxLin][auxCol] = Vazio();
-            // tabuleiro[Tlin-addLin][Tcol-addCol] = Vazio();
             tabuleiro[Tlin][Tcol] = Queen(Pl);
             addToVector(Tlin, Tcol, Pl);
 
@@ -417,10 +411,9 @@ public:
         else
         { // Normal
             setVazio(lin, col);
-            // tabuleiro[lin][col] = Vazio();
+
             if (abs(Tlin - lin) == 2 && abs(Tcol - col) == 2)
             { // Capturar peca
-                // tabuleiro[lin][col] = Vazio();
                 if (Tcol > col)
                     col += 1;
                 else
@@ -460,6 +453,36 @@ public:
                 return true;
             }
         }
+    }
+
+    bool canMove(Player Pl){
+
+        vector<pair<int,int> > pecas;
+        if(Pl == W) pecas = pecasW;
+        else pecas = pecasB;
+
+        for (int i = 0; i < pecas.size(); i++)
+            {   
+                int lin, col;
+                lin = pecas[i].first;
+                col = pecas[i].second;
+                for (int i = 0; i < 8; i++)
+                {
+                    for (int j = 0; j < 8; j++)
+                    {
+                        if ((i + j) % 2 == 1)
+                        {
+                            if (isValid(lin, col, i, j, Pl))
+                            {
+                                return true;
+                            }
+                        }
+                    }
+                }
+            }
+            if(Pl == W) qntWhite = 0;
+            else qntBlack = 0;
+            return false;
     }
 
     void ComputerPlay(Player Pl)
@@ -509,10 +532,6 @@ public:
                                 fim.second = j;
                                 last.first = inicio;
                                 last.second = fim;
-                                // last[0]=lin;
-                                // last[1]=col;
-                                // last[2]=i;
-                                // last[3]=j;
                                 jogadas.push_back(last);
                             }
                         }
@@ -552,10 +571,6 @@ public:
                                 fim.second = j;
                                 last.first = inicio;
                                 last.second = fim;
-                                // last[0]=lin;
-                                // last[1]=col;
-                                // last[2]=i;
-                                // last[3]=j;
                                 jogadas.push_back(last);
                             }
                         }
@@ -566,9 +581,10 @@ public:
         // Jogada(last[0],last[1],last[2],last[3],Comp,comp);
         srand(time(0));
         if(jogadas.size() == 0){
-            if(Pl == W) qntWhite = 0;
+            if(Comp == W) qntWhite = 0;
             else qntBlack = 0;
             termino();
+            return;
         }
         random_shuffle(jogadas.begin(), jogadas.end());
         auto it = jogadas.begin();
@@ -588,15 +604,18 @@ public:
 
         if (countB == 0)
         {
-            cout << "White WIN";
+            cout << "White WIN"<<endl;
             return true;
         }
         if (countW == 0)
         {
-            cout << "Black WIN";
+            cout << "Black WIN"<<endl;
             return true;
         }
-        if(count == 20){cout<<"Tie";return true;}
+        if(count == 20){
+            cout<<"Tie"<<endl;
+            return true;
+        }
         return false;
     }
 
@@ -620,6 +639,7 @@ public:
     }
 };
 bool isGameBegin = false;
+bool isGameOver = false;
 
 int main()
 {
@@ -628,14 +648,21 @@ int main()
     Opponent Op = frnd;
     Player Pl = W;
     vector<CircleShape> validPositions;
+
+    /////tamanho da janela
     RenderWindow window(VideoMode(500, 500), "Main Menu");
+    
+    // definindo as imagens de fundo
     Sprite background;
     Texture backGroundTexture, texturaTeste, backGroundTextureMenu;
+    Image image;
+    //menu principal
     if (!backGroundTextureMenu.loadFromFile(mainMenu))
     {
         cout << "Erro ao carregar o Menu" << endl;
         return 2;
     }
+    //tabuleiro
     if (!backGroundTexture.loadFromFile("images/checker_board.jpg"))
     {
         cout << "Erro ao carregar o tabuleiro" << endl;
@@ -648,36 +675,37 @@ int main()
     CircleShape casaPossivel(10),teste(20);
     casaPossivel.setFillColor(Color(216, 216, 191, 200));
 
+    // definindo som do movimento
     SoundBuffer buffer;
     if(!buffer.loadFromFile("resources/moving.wav")){
-        cout<<"Erro ao carregar o som da peça"<<endl;
+        cout<<"Erro ao carregar o som de movimento da peça"<<endl;
         return 2;
     }
 
     Sound sound;
     sound.setBuffer(buffer);
 
-
+    
     while (window.isOpen())
     {
         Event event;
         while (window.pollEvent(event))
-        {
-            if (event.type == Event::Closed)
+        {   
+            if (event.type == Event::Closed) //Se a janela for fechada
                 window.close();
-
-            else if (event.type == Event::MouseButtonPressed)
+            if(isGameOver) break;
+            else if (event.type == Event::MouseButtonPressed)// se algum botão do mouse for clicado
             {
-                if (event.mouseButton.button == Mouse::Left)
+                if (event.mouseButton.button == Mouse::Left)// se for o esquerdo
                 {
-                    if (!isGameBegin)
+                    if (!isGameBegin) // Se o jogo ainda não tiver começado
                     {
-                        if ((Mouse::getPosition(window).x >= 250))
+                        if ((Mouse::getPosition(window).x >= 250)) // Escolhe o computador
                         {
                             Op = frnd;
                             cout << "FRND\n";
                         }
-                        else
+                        else // escolhe um friend
                         {
                             Op = comp;
                             cout << "PC\n";
@@ -686,20 +714,21 @@ int main()
                         isGameBegin = true;
                         break;
                     }
-                    if (!isGameBegin)
+                    if (!isGameBegin) // para manter renderizando a tela de escolha
                         break;
 
+                    // Avalia se a posição do cursor do mouse esta em uma casa valida
                     if ((Mouse::getPosition(window).x >= 50) && (Mouse::getPosition(window).x <= 450) && (Mouse::getPosition(window).y >= 50) && (Mouse::getPosition(window).y <= 450))
                     {
                         int x = (Mouse::getPosition(window).x - 50) / 52;
                         int y = (Mouse::getPosition(window).y - 50) / 50;
                         int destX, destY;
-                        cout << "x: " << x << " y: " << y << endl;
 
                         window.display();
-                        while (Mouse::isButtonPressed(Mouse::Left))
+                        while (Mouse::isButtonPressed(Mouse::Left)) // aguarda o mouse deixar de esta pressionado
                         {
                         }
+                        /// verificar as casas validas para se jogar ///
                         for (int i = 0; i < 8; i++)
                         {
                             for (int j = 0; j < 8; j++)
@@ -716,9 +745,10 @@ int main()
                             }
                         }
                         window.display();
+
                         while (1)
                         {
-                            if (Mouse::isButtonPressed(Mouse::Left))
+                            if (Mouse::isButtonPressed(Mouse::Left)) // seleção da casa de destino
                             {
                                 destX = (Mouse::getPosition(window).x - 50) / 52;
                                 destY = (Mouse::getPosition(window).y - 50) / 50;
@@ -726,16 +756,15 @@ int main()
                             }
                         }
 
-                        cout << "destX: " << destX << " destY: " << destY << endl;
-                        if(p.isValid(y, x, destY, destX, Pl)==2){p.playWithCapture();}    
-                        if(p.isValid(y, x, destY, destX, Pl)==1){p.playWithNoCapture();}
-                        if (p.Jogada(y, x, destY, destX, Pl, Op))
+                        if(p.isValid(y, x, destY, destX, Pl)==2){p.playWithCapture();} // se poder e capturar alguma peça  
+                        if(p.isValid(y, x, destY, destX, Pl)==1){p.playWithNoCapture();} // se não há captura, mas a jogada é valida
+
+                        if (p.Jogada(y, x, destY, destX, Pl, Op)) // realiza jogada
                         {   sound.play();
                             p.imprimir();
                             if (p.termino())
                             {
-                                Image image;
-                                int tempo = 1e7 + 1;
+                                
                                 if(p.getCount()==20){
                                     image.loadFromFile(draw);
                                 }
@@ -747,16 +776,13 @@ int main()
                                 {
                                     image.loadFromFile(whiteWin);
                                 }
-                                Texture texture;
-                                texture.loadFromImage(image);
-                                Sprite sprite;
-                                window.clear();
-                                sprite.setTexture(texture, true);
-                                window.draw(sprite);
-                                window.display();
-                                sleep(milliseconds(10000));
-                                window.close();
+                                
+                                backGroundTexture.loadFromImage(image);
+                                background.setTexture(backGroundTexture, true);
+                                isGameOver = true;
                             }
+                            if(isGameOver) break;
+                            //tipo de oponente
                             if (Op == frnd)
                             {
                                 if (Pl == W)
@@ -765,14 +791,12 @@ int main()
                                     Pl = W;
                             }
                             else
-                            {
+                            {   
                                 p.ComputerPlay(Pl);
                             }
-                            // p.imprimir();
-                            if (p.termino())
-                            {
-                                Image image;
-                                int tempo = 1e7 + 1;
+
+                            if (p.termino() || !p.canMove(Pl)) // Caso o jogo tenha acabado
+                            {                            // p.imprimir();
                                 if(p.getCount()==20){
                                     image.loadFromFile(draw);
                                 }
@@ -784,19 +808,12 @@ int main()
                                 {
                                     image.loadFromFile(whiteWin);
                                 }
-                                Texture texture;
-                                texture.loadFromImage(image);
-                                Sprite sprite;
-                                window.clear();
-                                sprite.setTexture(texture, true);
-                                window.draw(sprite);
-                                window.display();
-                                sleep(milliseconds(10000));
-                                window.close();
+                                backGroundTexture.loadFromImage(image);
+                                background.setTexture(backGroundTexture, true);
+                                isGameOver = true;
                             }
                             break;
                         }
-
                         break;
                     }
                 }
@@ -805,8 +822,12 @@ int main()
                 break;
         }
 
+        //renderizar o momento atual da partida
         window.clear();
-        if (isGameBegin)
+        if(isGameOver){
+            window.draw(background);
+        }
+        else if (isGameBegin)// Se o jogo tiver começado
         {   background.setTexture(backGroundTexture);
             window.draw(background);
             for (int i = 0; i < 8; i++)
@@ -823,7 +844,6 @@ int main()
                         texturaTeste.setSmooth(true);
                         teste.setTexture(&texturaTeste);
                         teste.setPosition(Vector2f(50 + 52 * j, 50 + 50 * i));
-                        // teste.setOutlineColor(Color(216,216,191,100));
                         teste.setOutlineColor(Color(254, 254, 254, 100));
                         teste.setOutlineThickness(0);
                         if ((p.getElement(i, j)).getPlayer() == Pl)
@@ -833,8 +853,9 @@ int main()
                 }
             }
         }
-        else
+        else // caso o jogo ainda não tenha começado
             window.draw(background);
+
         window.display();
     }
 
