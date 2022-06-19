@@ -1,4 +1,5 @@
 
+
 #include <SFML/Graphics.hpp>
 #include <SFML/Audio.hpp>
 #include <iostream>
@@ -486,6 +487,7 @@ public:
     void ComputerPlay(Player Pl)
     {
         Player Comp;
+        // int last[4]; Para ser sempre a ultima jogada valida
         vector<pair<pair<int, int>, pair<int, int>>> jogadas; // para ser aleatorio
         int addLin;
         if (Pl == W)
@@ -575,6 +577,7 @@ public:
                 }
             }
         }
+        // Jogada(last[0],last[1],last[2],last[3],Comp,comp);
         srand(time(0));
         if(jogadas.size() == 0){
             if(Comp == W) qntWhite = 0;
@@ -585,7 +588,6 @@ public:
         random_shuffle(jogadas.begin(), jogadas.end());
         auto it = jogadas.begin();
         pair<pair<int, int>, pair<int, int>> aleatoria = (*it);
-        cout << aleatoria.first.first;
         Jogada(aleatoria.first.first, aleatoria.first.second, aleatoria.second.first, aleatoria.second.second, Comp, comp);
         playWithNoCapture();
         imprimir();
